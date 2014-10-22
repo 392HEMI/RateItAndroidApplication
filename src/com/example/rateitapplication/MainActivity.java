@@ -1,7 +1,6 @@
 package com.example.rateitapplication;
 
-import com.example.rateitapplication.handlers.CategoriesHandler;
-import com.example.rateitapplication.handlers.IResponseHandler;
+import com.example.rateitapplication.handlers.*;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -26,6 +25,13 @@ public class MainActivity extends Activity {
 		IResponseHandler handler = new CategoriesHandler(this, listView);
 		actionInvoker.executeAction(action, params, handler);
 	}
+	private void invokeGetTypes(int categoryID)
+	{
+		String action = "gettypes";
+		String params = Integer.toString(categoryID);
+		IResponseHandler handler = new TypesHandler(this, listView);
+		actionInvoker.executeAction(action, params, handler);
+	}
 	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,18 +39,7 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
         InitializeComponent();
         Log.e("APPLICATION", "PREREQUEST");
-        invokeGetCategories(null);
+        invokeGetTypes(10);
         Log.e("APPLICATION", "POSTREQUEST");
     }
-    
-    //private void attachAdapter(final ListView listView)
-    //{
-    //    String[] values = new String[] { "Android", "iPhone", "WindowsMobile",
-    //            "Blackberry", "WebOS", "Ubuntu", "Windows7", "Max OS X",
-    //            "Linux", "OS/2" };
-            // use your custom layout
-    //        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-    //            R.layout.rowlayout, R.id.label, values);
-    //        listView.setAdapter(adapter);
-    //}
 }
