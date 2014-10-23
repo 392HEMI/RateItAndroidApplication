@@ -1,14 +1,14 @@
-package com.example.rateitapplication.handlers;
+package com.rateit.androidapplication.handlers;
 
 import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.example.rateitapplication.R;
-import com.example.rateitapplication.models.TypesModel;
-import com.example.rateitapplication.models.Category;
-import com.example.rateitapplication.models.Type;
+import com.rateit.androidapplication.R;
+import com.rateit.androidapplication.models.TypesModel;
+import com.rateit.androidapplication.models.Category;
+import com.rateit.androidapplication.models.Type;
 
 import android.app.Activity;
 import android.util.Log;
@@ -33,7 +33,6 @@ public class TypesHandler implements IResponseHandler {
 
 	@Override
 	public void Success(int statusCode, Header[] headers, String response) {
-		Log.e("APPLICATION", response);
 		try
 		{
 			JSONObject jsonObj = new JSONObject(response);

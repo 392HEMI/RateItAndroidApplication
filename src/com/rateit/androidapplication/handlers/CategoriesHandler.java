@@ -1,4 +1,4 @@
-package com.example.rateitapplication.handlers;
+package com.rateit.androidapplication.handlers;
 
 import org.apache.http.Header;
 import org.json.JSONArray;
@@ -7,13 +7,16 @@ import org.json.JSONObject;
 
 import android.app.Activity;
 import android.util.Log;
-import android.widget.ArrayAdapter;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
-import com.example.rateitapplication.R;
-import com.example.rateitapplication.models.CategoriesModel;
-import com.example.rateitapplication.models.Category;
-import com.example.rateitapplication.models.SubCategory;
+import com.rateit.androidapplication.adapters.CategoryAdapter;
+import com.rateit.androidapplication.models.CategoriesModel;
+import com.rateit.androidapplication.models.Category;
+import com.rateit.androidapplication.models.SubCategory;
+import com.rateit.androidapplication.MainActivity;
 
 public class CategoriesHandler implements IResponseHandler {
 	private Activity _activity;
@@ -32,7 +35,6 @@ public class CategoriesHandler implements IResponseHandler {
 	}
 	@Override
 	public void Success(int statusCode, Header[] headers, String response) {
-		Log.e("APPLICATION", response);
 		try
 		{
 			JSONObject jsonObj = new JSONObject(response);
@@ -90,17 +92,18 @@ public class CategoriesHandler implements IResponseHandler {
 	
     private void attachAdapter(final ListView listView, SubCategory[] subCategories)
     {
-    	int count = subCategories.length;
-    	String[] strings = new String[count];
-    	for (int i = 0; i < subCategories.length; i++)
-    	{
-    		strings[i] = subCategories[i].title;
-    	}
-    	ArrayAdapter<String> adapter = new ArrayAdapter<String>(
-    			_activity,
-    			R.layout.rowlayout,
-    			R.id.label,
-    			strings);
+    	CategoryAdapter adapter = new CategoryAdapter(_activity, subCategories);
     	listView.setAdapter(adapter);
+    	listView.setOnItemClickListener(new OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+				SubCategory subCategory = (SubCategory)parent.getItemAtPosition(position);
+				MainActivity activity = (MainActivity)_activity;
+				if (subCategory.isLast)
+					activity.invokeGetTypes(subCategory.id, true);
+				else
+					activity.invokeGetCategories(subCategory.id, true);
+			}
+		});
     }
 }

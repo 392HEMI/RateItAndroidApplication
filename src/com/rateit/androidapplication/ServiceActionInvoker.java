@@ -1,8 +1,6 @@
-package com.example.rateitapplication;
+package com.rateit.androidapplication;
 
-import android.util.Log;
-
-import com.example.rateitapplication.handlers.*;
+import com.rateit.androidapplication.handlers.IResponseHandler;
 import com.loopj.android.http.*;
 
 public final class ServiceActionInvoker {
@@ -11,7 +9,6 @@ public final class ServiceActionInvoker {
 	
 	private void executeRequest(String url, IResponseHandler handler)
 	{
-		Log.i("TAG", url);
 		client.get(url, new HttpResponseHandler(handler));
 	}
 

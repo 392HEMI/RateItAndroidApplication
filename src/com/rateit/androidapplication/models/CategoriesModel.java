@@ -1,4 +1,4 @@
-package com.example.rateitapplication.models;
+package com.rateit.androidapplication.models;
 
 public final class CategoriesModel {
 	public Category category;
