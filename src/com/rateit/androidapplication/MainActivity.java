@@ -50,6 +50,18 @@ public class MainActivity extends Activity {
 		
 		backMethod = new GoToTypes(categoryID);
 	}
+	public void invokeGetObjects(int typeID, boolean saveLastState)
+	{
+		if (saveLastState)
+			actionSeq.push(backMethod);	
+		Log.i("INVOKE", "GetTypes");
+		String action = "gettypes";
+		String params = Integer.toString(typeID);
+		IResponseHandler handler = new ObjectsHandler(this, listView);
+		actionInvoker.executeAction(action, params, handler);
+		
+		backMethod = new GoToObjects(typeID);
+	}
 	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,7 +93,7 @@ public class MainActivity extends Activity {
 		   invokeGetCategories(_id, false);
 	   }
    }
-   private class GoToTypes implements IMethod                 
+   private class GoToTypes implements IMethod     
    {
 	   private Integer _id;
 	   public GoToTypes(Integer id)
@@ -91,6 +103,18 @@ public class MainActivity extends Activity {
 	   @Override
 	   public void Execute() {
 		   invokeGetTypes(_id, false);
+	   }
+   }
+   private class GoToObjects implements IMethod       
+   {
+	   private Integer _id;
+	   public GoToObjects(Integer id)
+	   {
+		   _id = id;
+	   }
+	   @Override
+	   public void Execute() {
+		   invokeGetObjects(_id, false);
 	   }
    }
 }

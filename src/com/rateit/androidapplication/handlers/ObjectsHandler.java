@@ -6,20 +6,18 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.rateit.androidapplication.R;
-import com.rateit.androidapplication.models.TypesModel;
-import com.rateit.androidapplication.models.Category;
-import com.rateit.androidapplication.models.Type;
+import com.rateit.androidapplication.models.ObjectsModel;
 
 import android.app.Activity;
 import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-public class TypesHandler implements IResponseHandler {
+public class ObjectsHandler implements IResponseHandler {
 	private Activity _activity;
 	private ListView _listView;
 	
-	public TypesHandler(Activity activity, ListView listView)
+	public ObjectsHandler(Activity activity, ListView listView)
 	{
 		_activity = activity;
 		_listView = listView;
@@ -28,7 +26,6 @@ public class TypesHandler implements IResponseHandler {
 	@Override
 	public void Start() {
 		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
@@ -42,37 +39,31 @@ public class TypesHandler implements IResponseHandler {
 			{
 				// error
 			}
-			TypesModel model = new TypesModel();
+			JSONObject type = jsonObj.getJSONObject("Type");
+			ObjectsModel model = new ObjectsModel();
 			
-			if (jsonObj.isNull("category"))
+			int typeID = type.getInt("ID");
+			String typeTitle = type.getString("Title");
+			ObjectsModel.Type typeObj = model.new Type(typeID, typeTitle);
+			
+			JSONArray objects = jsonObj.getJSONArray("Objects");
+			JSONObject object;
+			int count = objects.length();
+			
+			ObjectsModel.GeneralObject[] objs = new ObjectsModel.GeneralObject[count];
+			
+			for (int i = 0; i < objects.length(); i++)
 			{
-				model.category = null;
-			}
-			else
-			{
-				JSONObject category = jsonObj.getJSONObject("category");
-				int id = category.getInt("ID");
-				String title = category.getString("Title");
-				model.category = new Category(id, title);
-			}
-			
-			JSONArray subCategories = jsonObj.getJSONArray("types");
-			JSONObject subCategory;
-			
-			int count = subCategories.length();
-			model.types = new Type[count];
-			
-			for (int i = 0; i < subCategories.length(); i++)
-			{
-				subCategory = subCategories.getJSONObject(i);
+				object = objects.getJSONObject(i);
 				
-				int id = subCategory.getInt("id");
-				String title = subCategory.getString("title");
-				boolean hasObjects = subCategory.getBoolean("hasObjects");
+				int id = object.getInt("ID");
+				String title = object.getString("Title");
 				
-				model.types[i] = new Type(id, title, hasObjects);
+				objs[i] = model.new GeneralObject(id, title);
 			}
-			attachAdapter(_listView, model.types);
+			model.type = typeObj;
+			model.objects = objs;
+			attachAdapter(_listView, model.objects);
 		}
 		catch (JSONException e)
 		{
@@ -86,7 +77,7 @@ public class TypesHandler implements IResponseHandler {
 		
 	}
 	
-    private void attachAdapter(final ListView listView, Type[] types)
+    private void attachAdapter(final ListView listView, ObjectsModel.GeneralObject[] types)
     {
     	int count = types.length;
     	String[] strings = new String[count];
