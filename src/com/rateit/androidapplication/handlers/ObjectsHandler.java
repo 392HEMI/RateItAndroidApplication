@@ -5,13 +5,18 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.rateit.androidapplication.R;
+import com.rateit.androidapplication.MainActivity;
+import com.rateit.androidapplication.ObjectActivity;
+import com.rateit.androidapplication.adapters.ObjectsAdapter;
 import com.rateit.androidapplication.models.ObjectsModel;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.util.Log;
-import android.widget.ArrayAdapter;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.AdapterView.OnItemClickListener;
 
 public class ObjectsHandler implements IResponseHandler {
 	private Activity _activity;
@@ -33,7 +38,7 @@ public class ObjectsHandler implements IResponseHandler {
 		try
 		{
 			JSONObject jsonObj = new JSONObject(response);
-			if (jsonObj.getString("Status") == "ok")
+			if (jsonObj.getString("Status").equalsIgnoreCase("ok"))
 				jsonObj = jsonObj.getJSONObject("Content");
 			else
 			{
@@ -77,19 +82,18 @@ public class ObjectsHandler implements IResponseHandler {
 		
 	}
 	
-    private void attachAdapter(final ListView listView, ObjectsModel.GeneralObject[] types)
+    private void attachAdapter(final ListView listView, ObjectsModel.GeneralObject[] objects)
     {
-    	int count = types.length;
-    	String[] strings = new String[count];
-    	for (int i = 0; i < types.length; i++)
-    	{
-    		strings[i] = types[i].title;
-    	}
-    	ArrayAdapter<String> adapter = new ArrayAdapter<String>(
-    			_activity,
-    			R.layout.rowlayout,
-    			R.id.label,
-    			strings);
+    	ObjectsAdapter adapter = new ObjectsAdapter(_activity, objects);
+    	listView.setOnItemClickListener(new OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+				ObjectsModel.GeneralObject obj = (ObjectsModel.GeneralObject)parent.getItemAtPosition(position);
+				Intent intent = new Intent(_activity.getApplicationContext(), ObjectActivity.class);
+				intent.putExtra("objectID", obj.id);
+				_activity.startActivity(intent);
+			}
+		});
     	listView.setAdapter(adapter);
     }
 }

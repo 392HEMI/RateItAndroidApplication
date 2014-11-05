@@ -38,11 +38,10 @@ public class CategoriesHandler implements IResponseHandler {
 		try
 		{
 			JSONObject jsonObj = new JSONObject(response);
-			if (jsonObj.getString("Status") == "ok")
+			if (jsonObj.getString("Status").equalsIgnoreCase("ok"))
 				jsonObj = jsonObj.getJSONObject("Content");
 			else
 			{
-				// error
 			}
 				
 			CategoriesModel model = new CategoriesModel();

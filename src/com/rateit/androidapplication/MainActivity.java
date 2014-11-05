@@ -25,6 +25,7 @@ public class MainActivity extends Activity {
 		backMethod = new GoToCategories(null);
 	}
 	
+	
 	public void invokeGetCategories(Integer parentID, boolean saveLastState)
 	{
 		if (saveLastState)
@@ -49,28 +50,39 @@ public class MainActivity extends Activity {
 		actionInvoker.executeAction(action, params, handler);
 		
 		backMethod = new GoToTypes(categoryID);
+		Log.i("POSTINVOKE", "GetTypes");
 	}
 	public void invokeGetObjects(int typeID, boolean saveLastState)
 	{
 		if (saveLastState)
 			actionSeq.push(backMethod);	
-		Log.i("INVOKE", "GetTypes");
-		String action = "gettypes";
+		String action = "getobjects";
 		String params = Integer.toString(typeID);
 		IResponseHandler handler = new ObjectsHandler(this, listView);
 		actionInvoker.executeAction(action, params, handler);
 		
 		backMethod = new GoToObjects(typeID);
+		
 	}
+
+	public void ExecuteAction(String action, int id, IResponseHandler handler, IMethod _backMethod)
+	{
+		if (_backMethod != null)
+			actionSeq.push(backMethod);
+		
+		actionInvoker.executeAction(action, Integer.toString(id), handler);
+		
+		if (_backMethod != null)
+			backMethod = (_backMethod);
+	}
+	
 	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         InitializeComponent();
-        Log.e("APPLICATION", "PREREQUEST");
         invokeGetCategories(null, true);
-        Log.e("APPLICATION", "POSTREQUEST");
     }
     
     @Override

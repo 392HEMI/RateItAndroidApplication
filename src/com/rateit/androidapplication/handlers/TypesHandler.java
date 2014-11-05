@@ -5,15 +5,19 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.rateit.androidapplication.R;
+import com.rateit.androidapplication.MainActivity;
 import com.rateit.androidapplication.models.TypesModel;
 import com.rateit.androidapplication.models.Category;
 import com.rateit.androidapplication.models.Type;
 
+import com.rateit.androidapplication.adapters.TypeAdapter;
+
 import android.app.Activity;
 import android.util.Log;
-import android.widget.ArrayAdapter;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.AdapterView.OnItemClickListener;
 
 public class TypesHandler implements IResponseHandler {
 	private Activity _activity;
@@ -36,12 +40,13 @@ public class TypesHandler implements IResponseHandler {
 		try
 		{
 			JSONObject jsonObj = new JSONObject(response);
-			if (jsonObj.getString("Status") == "ok")
+			if (jsonObj.getString("Status").equalsIgnoreCase("ok"))
 				jsonObj = jsonObj.getJSONObject("Content");
 			else
 			{
 				// error
 			}
+			Log.i("PREIVNOKE", "");
 			TypesModel model = new TypesModel();
 			
 			if (jsonObj.isNull("category"))
@@ -56,19 +61,19 @@ public class TypesHandler implements IResponseHandler {
 				model.category = new Category(id, title);
 			}
 			
-			JSONArray subCategories = jsonObj.getJSONArray("types");
-			JSONObject subCategory;
+			JSONArray types = jsonObj.getJSONArray("types");
+			JSONObject type;
 			
-			int count = subCategories.length();
+			int count = types.length();
 			model.types = new Type[count];
 			
-			for (int i = 0; i < subCategories.length(); i++)
+			for (int i = 0; i < types.length(); i++)
 			{
-				subCategory = subCategories.getJSONObject(i);
+				type = types.getJSONObject(i);
 				
-				int id = subCategory.getInt("id");
-				String title = subCategory.getString("title");
-				boolean hasObjects = subCategory.getBoolean("hasObjects");
+				int id = type.getInt("id");
+				String title = type.getString("title");
+				boolean hasObjects = type.getBoolean("hasObjects");
 				
 				model.types[i] = new Type(id, title, hasObjects);
 			}
@@ -94,11 +99,15 @@ public class TypesHandler implements IResponseHandler {
     	{
     		strings[i] = types[i].title;
     	}
-    	ArrayAdapter<String> adapter = new ArrayAdapter<String>(
-    			_activity,
-    			R.layout.rowlayout,
-    			R.id.label,
-    			strings);
+    	TypeAdapter adapter = new TypeAdapter(_activity, types);		
     	listView.setAdapter(adapter);
+    	listView.setOnItemClickListener(new OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> types, View view, int position, long id) {
+				Type type = (Type)types.getItemAtPosition(position);
+				MainActivity activity = (MainActivity)_activity;
+				activity.invokeGetObjects(type.id, true);
+			}
+		});
     }
 }
