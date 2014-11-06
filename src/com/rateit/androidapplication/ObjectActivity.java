@@ -30,8 +30,6 @@ public class ObjectActivity extends Activity {
 
 	private View setupCommentRow(View view, final ObjectModel.Comment comment)
 	{
-		
-	    
 	    ImageView avatar = (ImageView)view.findViewById(R.id.avatar);
 	    TextView name = (TextView)view.findViewById(R.id.name);
 	    TextView surname = (TextView)view.findViewById(R.id.surname);
