@@ -1,5 +1,6 @@
 package com.rateit.androidapplication;
 
+import com.rateit.androidapplication.handlers.ObjectHandler;
 import com.rateit.androidapplication.models.ObjectModel;
 
 import android.app.Activity;
@@ -14,6 +15,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RatingBar;
 import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.TabHost.OnTabChangeListener;
@@ -24,9 +26,12 @@ public class ObjectActivity extends Activity {
 	private ServiceActionInvoker invoker;
 	
 	private TabHost tabhost;
-	private LinearLayout tab1;
 	
 	private ObjectModel model;
+	public void setModel(ObjectModel _model)
+	{
+		model = _model;
+	}
 
 	private View setupCommentRow(View view, final ObjectModel.Comment comment)
 	{
@@ -40,7 +45,7 @@ public class ObjectActivity extends Activity {
 	    
 	    surname.setText(comment.User.Surname);
 	    name.setText(comment.User.Name);
-	    likesCount.setText(comment.Likes);
+	    likesCount.setText(Integer.toString(comment.Likes));
 	    text.setText(comment.Text);
 	    // download icon
 	    
@@ -58,6 +63,13 @@ public class ObjectActivity extends Activity {
 	    return view;
 	}
 	
+	private View setupCommentRowL(View view, final ObjectModel.Comment comment)
+	{
+		TextView textView = (TextView)view.findViewById(R.id.label);
+		textView.setText(comment.Text);
+	    return view;
+	}
+	
 	private void showPropertiesTab()
 	{
 
@@ -65,18 +77,15 @@ public class ObjectActivity extends Activity {
 	
 	private void showCommentsTab(ObjectModel.Comment[] comments)
 	{
-		ListView listView = new ListView(getApplicationContext());
+		LinearLayout tab2 = (LinearLayout)findViewById(R.id.tab2);
 		LayoutInflater inflater = getLayoutInflater();
-		
 		View v;
-		for (int i = 0; i <= comments.length; i++)
+		for (int i = 0; i < comments.length; i++)
 		{
-			v = inflater.inflate(R.layout.comment_row_layout, null);
-			setupCommentRow(v, comments[i]);
-			listView.addHeaderView(v);
+			v = inflater.inflate(R.layout.comment_row_layout, tab2, false);
+			v = setupCommentRow(v, comments[i]);
+			tab2.addView(v);
 		}
-		
-		tab1.addView(listView);		
 	}
 	
 	private void showImagesTab(String[] images)
@@ -84,13 +93,22 @@ public class ObjectActivity extends Activity {
 		
 	}
 
-	private boolean GetModel(int objID)
+	private void GetModel(int objID)
 	{
-		//invoker.executeAction("GetObject", Integer.toString(objID), new ObjectHandler());
-		return true;
+		Log.i("e", Integer.toString(objID));
+		invoker.executeAction("GetObject", Integer.toString(objID), new ObjectHandler(this));
 	}
-	private void InitializeComponent()
+	
+	public void InitializeComponent()
 	{
+		TextView title = (TextView)findViewById(R.id.titleText);
+		TextView rating = (TextView)findViewById(R.id.rating);
+		RatingBar ratingStars = (RatingBar)findViewById(R.id.ratingStarts);
+		
+		title.setText(model.Title);
+		double _rate = model.Rating == null ? 0.0 : model.Rating;
+		rating.setText(Double.toString(_rate));
+		ratingStars.setRating((float)_rate);
 		TabHost tabhost = (TabHost)findViewById(android.R.id.tabhost);
 		
 		tabhost.setup();
@@ -106,26 +124,27 @@ public class ObjectActivity extends Activity {
 		tabspec.setContent(R.id.tab1);
 		tabhost.addTab(tabspec);
 
+
 		tabspec = tabhost.newTabSpec("tag2");
 		tabspec.setIndicator(comments_view);
 		tabspec.setContent(R.id.tab2);
 		tabhost.addTab(tabspec);
-
+		
 		tabspec = tabhost.newTabSpec("tag3");
 		tabspec.setIndicator(images_view);
 		tabspec.setContent(R.id.tab3);
 		tabhost.addTab(tabspec);
 		
 		tabhost.setCurrentTabByTag("tag1");
-		
+		tabhost.invalidate();
 		tabhost.setOnTabChangedListener(new OnTabChangeListener() {
 			@Override
 			public void onTabChanged(String tabId) {
-				if (tabId.equalsIgnoreCase("tab1"))
+				if (tabId.equalsIgnoreCase("tag1"))
 					showPropertiesTab();
-				else if (tabId.equalsIgnoreCase("tab2"))
+				else if (tabId.equalsIgnoreCase("tag2"))
 					showCommentsTab(model.Comments);
-				else if (tabId.equalsIgnoreCase("tab3"))
+				else if (tabId.equalsIgnoreCase("tag3"))
 					showImagesTab(model.Images);
 			}
 		});
@@ -140,14 +159,7 @@ public class ObjectActivity extends Activity {
         invoker = application.getHttpInvoker();
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
-        int objID = bundle.getInt("objID");
-        
-        if (GetModel(objID))
-        	InitializeComponent();
-        else
-        {
-        	// on get model error
-        	return;
-        }
+        int objID = bundle.getInt("objectID");
+        GetModel(objID);
     }
 }

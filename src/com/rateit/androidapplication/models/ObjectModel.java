@@ -14,6 +14,7 @@ public class ObjectModel {
 		public User User;
 		public String Text;
 		public int Likes;
+		public Boolean Like;
 	}
 	
 	public class User
@@ -26,7 +27,9 @@ public class ObjectModel {
 	
 	public int ID;
 	public String Title;
-	public double Rating;
+	public Double Rating;
+	public Integer MyMark;
+	public Object[] Properties;
 	public String[] Images;
 	public Comment[] Comments;
 }

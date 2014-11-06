@@ -10,7 +10,7 @@
     	android:orientation="vertical" >
 
     	<TextView
-        	android:id="@+id/textView1"
+        	android:id="@+id/titleText"
         	android:layout_width="fill_parent"
         	android:layout_height="wrap_content"
         	android:gravity="center"
@@ -19,13 +19,13 @@
         	android:textAppearance="?android:attr/textAppearanceLarge" />
 
     	<ImageView
-        	android:id="@+id/imageView1"
+        	android:id="@+id/avatar"
         	android:layout_width="fill_parent"
         	android:layout_height="180px"
         	android:src="@drawable/abc_ab_stacked_solid_light_holo" />
 
     	<TextView
-        	android:id="@+id/textView2"
+        	android:id="@+id/rating"
         	android:layout_width="fill_parent"
         	android:layout_height="wrap_content"
         	android:gravity="center"
@@ -34,7 +34,7 @@
         	android:textAppearance="?android:attr/textAppearanceLarge" />
 
     	<RatingBar
-        	android:id="@+id/ratingBar1"
+        	android:id="@+id/ratingStarts"
         	android:layout_width="wrap_content"
         	android:layout_height="wrap_content"
         	android:layout_gravity="center"

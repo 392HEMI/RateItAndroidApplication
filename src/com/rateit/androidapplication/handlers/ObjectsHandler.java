@@ -5,7 +5,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.rateit.androidapplication.MainActivity;
 import com.rateit.androidapplication.ObjectActivity;
 import com.rateit.androidapplication.adapters.ObjectsAdapter;
 import com.rateit.androidapplication.models.ObjectsModel;
