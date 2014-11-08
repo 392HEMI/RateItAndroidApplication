@@ -13,7 +13,7 @@ import java.util.Stack;
 public class MainActivity extends Activity {
 	private ListView listView;
 	private Stack<IMethod> actionSeq;
-	private ServiceActionInvoker actionInvoker;
+	private HttpMaster actionInvoker;
 	
 	private IMethod backMethod;
 	
@@ -21,10 +21,9 @@ public class MainActivity extends Activity {
 	{
 		listView = (ListView)findViewById(R.id.listView1);
 		actionSeq = new Stack<IMethod>();
-		actionInvoker = new ServiceActionInvoker();
+		actionInvoker = new HttpMaster(getApplicationContext());
 		backMethod = new GoToCategories(null);
 	}
-	
 	
 	public void invokeGetCategories(Integer parentID, boolean saveLastState)
 	{
@@ -50,7 +49,6 @@ public class MainActivity extends Activity {
 		actionInvoker.executeAction(action, params, handler);
 		
 		backMethod = new GoToTypes(categoryID);
-		Log.i("POSTINVOKE", "GetTypes");
 	}
 	public void invokeGetObjects(int typeID, boolean saveLastState)
 	{

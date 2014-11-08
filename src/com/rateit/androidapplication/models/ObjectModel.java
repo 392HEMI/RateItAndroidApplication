@@ -26,6 +26,7 @@ public class ObjectModel {
 	}
 	
 	public int ID;
+	public String Logo;
 	public String Title;
 	public Double Rating;
 	public Integer MyMark;

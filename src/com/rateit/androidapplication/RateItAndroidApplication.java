@@ -6,16 +6,16 @@ import android.app.Application;
 
 public class RateItAndroidApplication extends Application {
 
-	private ServiceActionInvoker httpInvoker;
+	private HttpMaster httpInvoker;
 	private Stack<IMethod> actionSeq;
 
-	public ServiceActionInvoker getHttpInvoker()
+	public HttpMaster getHttpInvoker()
 	{
 		if (httpInvoker == null)
-			httpInvoker = new ServiceActionInvoker();
+			httpInvoker = new HttpMaster(getApplicationContext());
 		return httpInvoker;
 	}	
-	public void setHttpInvoker(ServiceActionInvoker invoker)
+	public void setHttpInvoker(HttpMaster invoker)
 	{
 		if (invoker == null)
 			return;
@@ -37,7 +37,6 @@ public class RateItAndroidApplication extends Application {
 	public RateItAndroidApplication()	
 	{
 		super();
-		httpInvoker = new ServiceActionInvoker();
 		actionSeq = new Stack<IMethod>();
 	}
 }

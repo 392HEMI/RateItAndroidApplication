@@ -92,8 +92,6 @@ public class CategoriesHandler implements IResponseHandler {
 	}
 	@Override
 	public void Failure(int statusCode, Throwable error, String content) {
-		// TODO Auto-generated method stub
-		Log.e("APPLICATION", error.getMessage());
 	}
 	
     private void attachAdapter(final ListView listView, SubCategory[] subCategories)

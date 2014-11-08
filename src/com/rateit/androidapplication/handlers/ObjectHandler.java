@@ -18,6 +18,7 @@ public class ObjectHandler implements IResponseHandler {
 		ObjectModel model = new ObjectModel();
 		try {
 			model.Title = object.getString("Title");
+			model.Logo = object.getString("Logo");
 			model.Rating = object.isNull("Rating") ? null : object.getDouble("Rating");
 			model.MyMark = object.isNull("MyMark") ? null : object.getInt("MyMark");
 			

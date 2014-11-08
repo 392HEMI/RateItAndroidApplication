@@ -19,10 +19,9 @@
         	android:textAppearance="?android:attr/textAppearanceLarge" />
 
     	<ImageView
-        	android:id="@+id/avatar"
+        	android:id="@+id/logo"
         	android:layout_width="fill_parent"
-        	android:layout_height="180px"
-        	android:src="@drawable/abc_ab_stacked_solid_light_holo" />
+        	android:layout_height="180px" />
 
     	<TextView
         	android:id="@+id/rating"
@@ -80,7 +79,8 @@
                     	android:id="@+id/tab2"
                     	android:layout_width="match_parent"
                     	android:layout_height="match_parent"
-                    	android:orientation="vertical" >
+                    	android:orientation="vertical"
+                    	android:paddingTop="7dp" >
                 	</LinearLayout>
 
                 	<LinearLayout
