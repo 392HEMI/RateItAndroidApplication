@@ -2,6 +2,11 @@ package com.rateit.androidapplication;
 
 import java.io.File;
 
+import org.apache.http.Header;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import com.rateit.androidapplication.handlers.IResponseHandler;
 import com.rateit.androidapplication.handlers.ObjectHandler;
 import com.rateit.androidapplication.models.ObjectModel;
 
@@ -32,6 +37,30 @@ public class ObjectActivity extends Activity {
 	public void setModel(ObjectModel _model)
 	{
 		model = _model;
+	}
+	
+	private void setObjectRating()
+	{
+	}
+	
+	private void setCommentRating(int commentID, boolean up)
+	{
+		
+	}
+	
+	private void createComment(String text)
+	{
+		JSONObject object = new JSONObject();
+		
+		try {
+			object.put("UserName", "alexander");
+			object.put("Text", text);
+			
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		invoker.PostJSON("createComment", Integer.toString(model.ID), object, );
 	}
 
 	private View setupCommentRow(View view, final ObjectModel.Comment comment)
@@ -91,7 +120,7 @@ public class ObjectActivity extends Activity {
 	}
 	private void showCommentsTab(ObjectModel.Comment[] comments)
 	{
-		LinearLayout tab2 = (LinearLayout)findViewById(R.id.tab2);
+		LinearLayout tab2 = (LinearLayout)findViewById(R.id.tab2); 
 		tab2.removeAllViewsInLayout();
 		LayoutInflater inflater = getLayoutInflater();
 		View v;
@@ -103,21 +132,6 @@ public class ObjectActivity extends Activity {
 		}
 	}
 	private void showImagesTab(String[] images)
-	{
-		
-	}
-
-	private void setObjectRating()
-	{
-		
-	}
-	
-	private void setCommentRating(int commentID)
-	{
-		
-	}
-	
-	private void createComment()
 	{
 		
 	}

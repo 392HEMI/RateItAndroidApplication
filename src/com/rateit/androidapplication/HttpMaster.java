@@ -1,6 +1,11 @@
 package com.rateit.androidapplication;
 
 
+import java.io.UnsupportedEncodingException;
+
+import org.apache.http.entity.ByteArrayEntity;
+import org.json.JSONObject;
+
 import android.content.Context;
 
 import com.rateit.androidapplication.handlers.IFileResponseHandler;
@@ -36,6 +41,22 @@ public final class HttpMaster {
 		String url = API_ADDRESS + action + "/" + params;
 		executeRequest(url, handler);
 	}
+	
+	public void PostJSON(String action, String params, JSONObject object, IResponseHandler handler)
+	{
+		String url = API_ADDRESS + action + params;
+		ByteArrayEntity entity = null;
+		try
+		{
+			entity = new ByteArrayEntity(object.toString().getBytes("UTF-8"));
+		}
+		catch (UnsupportedEncodingException e)
+		{
+			e.printStackTrace();
+		}
+		client.post(context, url, entity, "application/json", new HttpResponseHandler(handler));
+	}
+	
 	public HttpMaster(Context _context)
 	{
 		client = new AsyncHttpClient();
