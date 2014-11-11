@@ -1,7 +1,7 @@
 package com.rateit.androidapplication;
 
 import com.rateit.androidapplication.R;
-import com.rateit.androidapplication.http.HttpMaster;
+import com.rateit.androidapplication.http.HttpClient;
 import com.rateit.androidapplication.http.handlers.IResponseHandler;
 import com.rateit.androidapplication.http.handlers.custom.CategoriesHandler;
 import com.rateit.androidapplication.http.handlers.custom.ObjectsHandler;
@@ -9,15 +9,13 @@ import com.rateit.androidapplication.http.handlers.custom.TypesHandler;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.util.Log;
-//import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import java.util.Stack;
 
 public class MainActivity extends Activity {
 	private ListView listView;
 	private Stack<IMethod> actionSeq;
-	private HttpMaster actionInvoker;
+	private HttpClient httpClient;
 	
 	private IMethod backMethod;
 	
@@ -25,7 +23,10 @@ public class MainActivity extends Activity {
 	{
 		listView = (ListView)findViewById(R.id.listView1);
 		actionSeq = new Stack<IMethod>();
-		actionInvoker = new HttpMaster(getApplicationContext());
+		
+		RateItAndroidApplication application = (RateItAndroidApplication)getApplication();
+		httpClient = application.getHttpClient();
+		
 		backMethod = new GoToCategories(null);
 	}
 	
@@ -36,7 +37,7 @@ public class MainActivity extends Activity {
 		String action = "getcategories";
 		String params = (parentID == null ? "" : Integer.toString(parentID));
 		IResponseHandler handler = new CategoriesHandler(this, listView);
-		actionInvoker.executeAction(action, params, handler);
+		httpClient.executeAction(action, params, handler);
 		
 		backMethod = new GoToCategories(parentID);
 		
@@ -48,7 +49,7 @@ public class MainActivity extends Activity {
 		String action = "gettypes";
 		String params = Integer.toString(categoryID);
 		IResponseHandler handler = new TypesHandler(this, listView);
-		actionInvoker.executeAction(action, params, handler);
+		httpClient.executeAction(action, params, handler);
 		
 		backMethod = new GoToTypes(categoryID);
 	}
@@ -59,7 +60,7 @@ public class MainActivity extends Activity {
 		String action = "getobjects";
 		String params = Integer.toString(typeID);
 		IResponseHandler handler = new ObjectsHandler(this, listView);
-		actionInvoker.executeAction(action, params, handler);
+		httpClient.executeAction(action, params, handler);
 		
 		backMethod = new GoToObjects(typeID);
 		
@@ -70,7 +71,7 @@ public class MainActivity extends Activity {
 		if (_backMethod != null)
 			actionSeq.push(backMethod);
 		
-		actionInvoker.executeAction(action, Integer.toString(id), handler);
+		httpClient.executeAction(action, Integer.toString(id), handler);
 		
 		if (_backMethod != null)
 			backMethod = (_backMethod);

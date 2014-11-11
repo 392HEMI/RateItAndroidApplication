@@ -15,13 +15,13 @@
         	android:layout_height="wrap_content"
         	android:gravity="center"
         	android:padding="10dp"
-        	android:text="Large Text"
         	android:textAppearance="?android:attr/textAppearanceLarge" />
 
     	<ImageView
-        	android:id="@+id/logo"
-        	android:layout_width="fill_parent"
-        	android:layout_height="180px" />
+    	    android:id="@+id/logo"
+    	    android:layout_width="fill_parent"
+    	    android:layout_height="180px"
+    	    android:src="@drawable/no_image" />
 
     	<TextView
         	android:id="@+id/rating"
@@ -29,7 +29,7 @@
         	android:layout_height="wrap_content"
         	android:gravity="center"
         	android:padding="10dp"
-        	android:text="Rating"
+        	android:text="0.0"
         	android:textAppearance="?android:attr/textAppearanceLarge" />
 
     	<RatingBar
@@ -86,7 +86,14 @@
                 		    android:id="@+id/commentBtn"
                 		    android:layout_width="fill_parent"
                 		    android:layout_height="wrap_content"
-                		    android:text="Добавить комментаарий" />
+                		    android:text="Добавить комментарий" />
+                		<LinearLayout
+                		    android:id="@+id/commentList"
+                		    android:layout_width="fill_parent"
+                		    android:layout_height="wrap_content"
+                		    android:orientation="vertical" >
+                		</LinearLayout>
+                		
                 	</LinearLayout>
 
                 	<LinearLayout

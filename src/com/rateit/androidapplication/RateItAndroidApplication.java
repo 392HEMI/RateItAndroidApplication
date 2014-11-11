@@ -2,12 +2,12 @@ package com.rateit.androidapplication;
 
 import java.util.Stack;
 
-import com.rateit.androidapplication.http.HttpMaster;
+import com.rateit.androidapplication.http.HttpClient;
 
 import android.app.Application;
 
 public class RateItAndroidApplication extends Application {
-	private HttpMaster httpInvoker;
+	private HttpClient httpClient;
 	private Stack<IMethod> actionSeq;
 	
 	private User user;
@@ -22,17 +22,11 @@ public class RateItAndroidApplication extends Application {
 		user = _user;
 	}
 
-	public HttpMaster getHttpInvoker()
+	public HttpClient getHttpClient()
 	{
-		if (httpInvoker == null)
-			httpInvoker = new HttpMaster(getApplicationContext());
-		return httpInvoker;
-	}	
-	public void setHttpInvoker(HttpMaster invoker)
-	{
-		if (invoker == null)
-			return;
-		httpInvoker = invoker;
+		if (httpClient == null)
+			httpClient = new HttpClient(getApplicationContext());
+		return httpClient;
 	}
 	
 	public void pushBackMethod(IMethod method)

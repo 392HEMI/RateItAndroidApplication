@@ -3,12 +3,10 @@ package com.rateit.androidapplication;
 import java.io.File;
 import java.util.UUID;
 
-import org.apache.http.Header;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.rateit.androidapplication.http.HttpMaster;
-import com.rateit.androidapplication.http.handlers.IResponseHandler;
+import com.rateit.androidapplication.http.HttpClient;
 import com.rateit.androidapplication.http.handlers.custom.CreateCommentHandler;
 import com.rateit.androidapplication.http.handlers.custom.IFileDownloadCompleteHandler;
 import com.rateit.androidapplication.http.handlers.custom.ObjectHandler;
@@ -34,10 +32,10 @@ import android.widget.TabHost.OnTabChangeListener;
 public class ObjectActivity extends Activity {
 	private RateItAndroidApplication application;
 	
-	private HttpMaster invoker;
+	private HttpClient invoker;
 	
 	private TabHost tabhost;
-	private LinearLayout tab2;
+	private LinearLayout commentList;
 	
 	private ObjectModel model;
 	public void setModel(ObjectModel _model)
@@ -60,14 +58,16 @@ public class ObjectActivity extends Activity {
 		UUID userID = application.getUser().getID();
 		JSONObject object = new JSONObject();
 		
-		try {
+		try
+		{
 			object.put("UserID", userID);
 			object.put("Text", text);
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
+		}
+		catch (JSONException e)
+		{
 			e.printStackTrace();
 		}
-		invoker.PostJSON("createComment", Integer.toString(model.ID), object, new CreateCommentHandler(this, tab2));
+		invoker.PostJSON("createComment", Integer.toString(model.ID), object, new CreateCommentHandler(this, commentList));
 	}
 
 	public View setupCommentRow(View view, final Comment comment)
@@ -124,27 +124,26 @@ public class ObjectActivity extends Activity {
 	{
 		
 	}
-	
+
 	private void showCommentsTab(Comment[] comments)
 	{ 
-		tab2.removeAllViewsInLayout();
+		commentList.removeAllViewsInLayout();
 		LayoutInflater inflater = getLayoutInflater();
 		View v;
 		for (int i = 0; i < comments.length; i++)
 		{
-			v = inflater.inflate(R.layout.comment_row_layout, tab2, false);
+			v = inflater.inflate(R.layout.comment_row_layout, commentList, false);
 			v = setupCommentRow(v, comments[i]);
-			tab2.addView(v);
+			commentList.addView(v);
 		}
 	}
 	private void showImagesTab(String[] images)
 	{
-		
 	}
 	
 	public void InitializeComponent()
 	{
-		tab2 = (LinearLayout)findViewById(R.id.tab2);
+		commentList = (LinearLayout)findViewById(R.id.tab2);
 		
 		final ImageView logo = (ImageView)findViewById(R.id.logo);
 		TextView title = (TextView)findViewById(R.id.titleText);
@@ -211,7 +210,7 @@ public class ObjectActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.object);
         application = (RateItAndroidApplication)getApplication();
-        invoker = application.getHttpInvoker();
+        invoker = application.getHttpClient();
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
         int objID = bundle.getInt("objectID");

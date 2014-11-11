@@ -16,7 +16,7 @@ import com.rateit.androidapplication.http.handlers.custom.IFileDownloadCompleteH
 import com.rateit.androidapplication.http.handlers.custom.ImageResponseHandler;
 import com.loopj.android.http.*;
 
-public final class HttpMaster {
+public final class HttpClient {
 	private Context context;
 	private final String API_ADDRESS = "http://192.168.1.101/api/call/";
 	private static AsyncHttpClient client;
@@ -60,7 +60,7 @@ public final class HttpMaster {
 		client.post(context, url, entity, "application/json", new HttpResponseHandler(handler));
 	}
 	
-	public HttpMaster(Context _context)
+	public HttpClient(Context _context)
 	{
 		client = new AsyncHttpClient();
 		context = _context;

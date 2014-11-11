@@ -2,5 +2,11 @@
 <resources>
 
     <string name="app_name">RateItAndroidApplication</string>
-    <string name="hello_world">Hello world!</string>
+
+    <string name="loginLabel">Вход</string>
+	<string name="usernameHint">Имя пользователя</string>
+    <string name="passwordHint">Пароль</string>
+    <string name="loginBtn">Вход</string>
+    <string name="registrationBtn">Регистрация</string>
+    <string name="noPasswordBtn">Забыли пароль?</string>
 </resources>
