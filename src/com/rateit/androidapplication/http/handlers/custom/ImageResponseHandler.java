@@ -1,4 +1,4 @@
-package com.rateit.androidapplication.handlers;
+package com.rateit.androidapplication.http.handlers.custom;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -7,7 +7,7 @@ import java.io.IOException;
 import android.content.Context;
 import android.content.ContextWrapper;
 
-import com.rateit.androidapplication.IFileDownloadCompleteHandler;
+import com.rateit.androidapplication.http.handlers.IFileResponseHandler;
 
 public class ImageResponseHandler implements IFileResponseHandler {
 	

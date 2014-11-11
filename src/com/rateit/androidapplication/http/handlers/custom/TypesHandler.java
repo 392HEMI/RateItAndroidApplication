@@ -1,4 +1,4 @@
-package com.rateit.androidapplication.handlers;
+package com.rateit.androidapplication.http.handlers.custom;
 
 import org.apache.http.Header;
 import org.json.JSONArray;
@@ -6,6 +6,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.rateit.androidapplication.MainActivity;
+import com.rateit.androidapplication.http.handlers.IResponseHandler;
 import com.rateit.androidapplication.models.TypesModel;
 import com.rateit.androidapplication.models.Category;
 import com.rateit.androidapplication.models.Type;

@@ -1,13 +1,18 @@
 package com.rateit.androidapplication;
 
 import java.io.File;
+import java.util.UUID;
 
 import org.apache.http.Header;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.rateit.androidapplication.handlers.IResponseHandler;
-import com.rateit.androidapplication.handlers.ObjectHandler;
+import com.rateit.androidapplication.http.HttpMaster;
+import com.rateit.androidapplication.http.handlers.IResponseHandler;
+import com.rateit.androidapplication.http.handlers.custom.CreateCommentHandler;
+import com.rateit.androidapplication.http.handlers.custom.IFileDownloadCompleteHandler;
+import com.rateit.androidapplication.http.handlers.custom.ObjectHandler;
+import com.rateit.androidapplication.models.Comment;
 import com.rateit.androidapplication.models.ObjectModel;
 
 import android.app.Activity;
@@ -32,6 +37,7 @@ public class ObjectActivity extends Activity {
 	private HttpMaster invoker;
 	
 	private TabHost tabhost;
+	private LinearLayout tab2;
 	
 	private ObjectModel model;
 	public void setModel(ObjectModel _model)
@@ -50,20 +56,21 @@ public class ObjectActivity extends Activity {
 	
 	private void createComment(String text)
 	{
+		RateItAndroidApplication application = (RateItAndroidApplication)getApplication();
+		UUID userID = application.getUser().getID();
 		JSONObject object = new JSONObject();
 		
 		try {
-			object.put("UserName", "alexander");
+			object.put("UserID", userID);
 			object.put("Text", text);
-			
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		invoker.PostJSON("createComment", Integer.toString(model.ID), object, );
+		invoker.PostJSON("createComment", Integer.toString(model.ID), object, new CreateCommentHandler(this, tab2));
 	}
 
-	private View setupCommentRow(View view, final ObjectModel.Comment comment)
+	public View setupCommentRow(View view, final Comment comment)
 	{
 	    final ImageView avatar = (ImageView)view.findViewById(R.id.avatar);
 	    TextView name = (TextView)view.findViewById(R.id.name);
@@ -77,7 +84,6 @@ public class ObjectActivity extends Activity {
 	    name.setText(comment.User.Name);
 	    likesCount.setText(Integer.toString(comment.Likes));
 	    text.setText(comment.Text);
-	    // download icon
 	    
 	    if (comment.Like == null || !comment.Like)
 	    {
@@ -118,9 +124,9 @@ public class ObjectActivity extends Activity {
 	{
 		
 	}
-	private void showCommentsTab(ObjectModel.Comment[] comments)
-	{
-		LinearLayout tab2 = (LinearLayout)findViewById(R.id.tab2); 
+	
+	private void showCommentsTab(Comment[] comments)
+	{ 
 		tab2.removeAllViewsInLayout();
 		LayoutInflater inflater = getLayoutInflater();
 		View v;
@@ -138,6 +144,8 @@ public class ObjectActivity extends Activity {
 	
 	public void InitializeComponent()
 	{
+		tab2 = (LinearLayout)findViewById(R.id.tab2);
+		
 		final ImageView logo = (ImageView)findViewById(R.id.logo);
 		TextView title = (TextView)findViewById(R.id.titleText);
 		TextView rating = (TextView)findViewById(R.id.rating);

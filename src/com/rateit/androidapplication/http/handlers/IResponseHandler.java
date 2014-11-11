@@ -1,4 +1,4 @@
-package com.rateit.androidapplication.handlers;
+package com.rateit.androidapplication.http.handlers;
 
 import org.apache.http.Header;
 

@@ -73,6 +73,7 @@
                     	    	    android:padding="10dp"
                     	    	    android:text="Раздел находится в разработке"
                     	    	    android:textAppearance="?android:attr/textAppearanceLarge" />
+                    	    	
                 	</LinearLayout>
 
                 	<LinearLayout
@@ -81,6 +82,11 @@
                     	android:layout_height="match_parent"
                     	android:orientation="vertical"
                     	android:paddingTop="7dp" >
+                		<Button
+                		    android:id="@+id/commentBtn"
+                		    android:layout_width="fill_parent"
+                		    android:layout_height="wrap_content"
+                		    android:text="Добавить комментаарий" />
                 	</LinearLayout>
 
                 	<LinearLayout

@@ -1,4 +1,4 @@
-package com.rateit.androidapplication.handlers;
+package com.rateit.androidapplication.http.handlers.custom;
 
 import org.apache.http.Header;
 import org.json.JSONArray;
@@ -13,6 +13,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
 import com.rateit.androidapplication.adapters.CategoryAdapter;
+import com.rateit.androidapplication.http.handlers.IResponseHandler;
 import com.rateit.androidapplication.models.CategoriesModel;
 import com.rateit.androidapplication.models.Category;
 import com.rateit.androidapplication.models.SubCategory;

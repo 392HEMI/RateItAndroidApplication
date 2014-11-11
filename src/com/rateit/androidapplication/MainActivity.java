@@ -1,7 +1,11 @@
 package com.rateit.androidapplication;
 
 import com.rateit.androidapplication.R;
-import com.rateit.androidapplication.handlers.*;
+import com.rateit.androidapplication.http.HttpMaster;
+import com.rateit.androidapplication.http.handlers.IResponseHandler;
+import com.rateit.androidapplication.http.handlers.custom.CategoriesHandler;
+import com.rateit.androidapplication.http.handlers.custom.ObjectsHandler;
+import com.rateit.androidapplication.http.handlers.custom.TypesHandler;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -29,7 +33,6 @@ public class MainActivity extends Activity {
 	{
 		if (saveLastState)
 			actionSeq.push(backMethod);
-		Log.i("INVOKE", "GetCategories");
 		String action = "getcategories";
 		String params = (parentID == null ? "" : Integer.toString(parentID));
 		IResponseHandler handler = new CategoriesHandler(this, listView);
@@ -41,8 +44,7 @@ public class MainActivity extends Activity {
 	public void invokeGetTypes(int categoryID, boolean saveLastState)
 	{
 		if (saveLastState)
-			actionSeq.push(backMethod);	
-		Log.i("INVOKE", "GetTypes");
+			actionSeq.push(backMethod);
 		String action = "gettypes";
 		String params = Integer.toString(categoryID);
 		IResponseHandler handler = new TypesHandler(this, listView);
@@ -103,6 +105,7 @@ public class MainActivity extends Activity {
 		   invokeGetCategories(_id, false);
 	   }
    }
+   
    private class GoToTypes implements IMethod     
    {
 	   private Integer _id;

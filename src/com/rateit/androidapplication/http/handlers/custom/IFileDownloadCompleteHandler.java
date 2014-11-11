@@ -1,4 +1,4 @@
-package com.rateit.androidapplication;
+package com.rateit.androidapplication.http.handlers.custom;
 
 import java.io.File;
 

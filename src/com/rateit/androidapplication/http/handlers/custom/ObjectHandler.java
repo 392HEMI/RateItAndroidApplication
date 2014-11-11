@@ -1,4 +1,4 @@
-package com.rateit.androidapplication.handlers;
+package com.rateit.androidapplication.http.handlers.custom;
 
 import java.util.UUID;
 
@@ -10,7 +10,10 @@ import org.json.JSONObject;
 import android.util.Log;
 
 import com.rateit.androidapplication.ObjectActivity;
+import com.rateit.androidapplication.http.handlers.IResponseHandler;
+import com.rateit.androidapplication.models.Comment;
 import com.rateit.androidapplication.models.ObjectModel;
+import com.rateit.androidapplication.models.User;
 
 public class ObjectHandler implements IResponseHandler {
 	private ObjectModel ParseJSON(JSONObject object)
@@ -31,7 +34,7 @@ public class ObjectHandler implements IResponseHandler {
 			int images_count = images.length();
 			
 			//model.Properties = new Object[properties_count];
-			model.Comments = new ObjectModel.Comment[comments_count];
+			model.Comments = new Comment[comments_count];
 			model.Images = new String[images_count];
 			
 			JSONObject comment;
@@ -44,8 +47,8 @@ public class ObjectHandler implements IResponseHandler {
 			{
 				comment = comments.getJSONObject(i);
 				user = comment.getJSONObject("User");
-				ObjectModel.Comment com = model.new Comment();
-				ObjectModel.User usr = model.new User();
+				Comment com = new Comment();
+				User usr = new User();
 				com.ID = comment.getInt("ID");
 				com.Likes = comment.getInt("Likes");
 				com.Like = comment.isNull("Like") ? null : comment.getBoolean("Like");

@@ -1,11 +1,6 @@
-package com.rateit.androidapplication;
-
-import java.io.File;
-import org.apache.http.Header;
+package com.rateit.androidapplication.http.handlers;
 
 import com.loopj.android.http.BinaryHttpResponseHandler;
-import com.loopj.android.http.FileAsyncHttpResponseHandler;
-import com.rateit.androidapplication.handlers.IFileResponseHandler;
 
 public class HttpFileResponseHandler extends BinaryHttpResponseHandler {
 	

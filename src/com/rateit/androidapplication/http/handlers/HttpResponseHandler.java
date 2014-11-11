@@ -1,9 +1,8 @@
-package com.rateit.androidapplication;
+package com.rateit.androidapplication.http.handlers;
 
 import org.apache.http.Header;
 
 import com.loopj.android.http.AsyncHttpResponseHandler;
-import com.rateit.androidapplication.handlers.IResponseHandler;
 
 
 public final class HttpResponseHandler extends AsyncHttpResponseHandler {

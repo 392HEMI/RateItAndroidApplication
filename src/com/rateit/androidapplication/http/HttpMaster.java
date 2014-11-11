@@ -1,4 +1,4 @@
-package com.rateit.androidapplication;
+package com.rateit.androidapplication.http;
 
 
 import java.io.UnsupportedEncodingException;
@@ -8,9 +8,12 @@ import org.json.JSONObject;
 
 import android.content.Context;
 
-import com.rateit.androidapplication.handlers.IFileResponseHandler;
-import com.rateit.androidapplication.handlers.IResponseHandler;
-import com.rateit.androidapplication.handlers.ImageResponseHandler;
+import com.rateit.androidapplication.http.handlers.HttpFileResponseHandler;
+import com.rateit.androidapplication.http.handlers.HttpResponseHandler;
+import com.rateit.androidapplication.http.handlers.IFileResponseHandler;
+import com.rateit.androidapplication.http.handlers.IResponseHandler;
+import com.rateit.androidapplication.http.handlers.custom.IFileDownloadCompleteHandler;
+import com.rateit.androidapplication.http.handlers.custom.ImageResponseHandler;
 import com.loopj.android.http.*;
 
 public final class HttpMaster {

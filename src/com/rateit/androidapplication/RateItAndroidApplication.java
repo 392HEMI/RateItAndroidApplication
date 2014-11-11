@@ -2,12 +2,25 @@ package com.rateit.androidapplication;
 
 import java.util.Stack;
 
+import com.rateit.androidapplication.http.HttpMaster;
+
 import android.app.Application;
 
 public class RateItAndroidApplication extends Application {
-
 	private HttpMaster httpInvoker;
 	private Stack<IMethod> actionSeq;
+	
+	private User user;
+
+	public User getUser()
+	{
+		return user;
+	}
+	
+	public void setUser(User _user)
+	{
+		user = _user;
+	}
 
 	public HttpMaster getHttpInvoker()
 	{
