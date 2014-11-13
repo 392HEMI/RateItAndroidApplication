@@ -1,8 +1,11 @@
 package com.rateit.androidapplication;
 
 import com.rateit.androidapplication.http.HttpClient;
+import com.rateit.androidapplication.http.handlers.IResponseHandler;
+import com.rateit.androidapplication.http.handlers.custom.LoginHandler;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -11,25 +14,31 @@ import android.widget.EditText;
 
 public class AccountActivity extends Activity {
 	private RateItAndroidApplication application;
-	private HttpClient client;
+	private HttpClient httpClient;
 	
-	private EditText login;
-	private EditText password;
+	private EditText loginBox;
+	private EditText passwordBox;
 	private Button loginBtn;
 	private Button registrationBtn;
 	private Button noPasswordBtn;
 	
 	private void InitializeComponent()
 	{
-		login = (EditText)findViewById(R.id.login);
-		password = (EditText)findViewById(R.id.password);
+		loginBox = (EditText)findViewById(R.id.login);
+		passwordBox = (EditText)findViewById(R.id.password);
 		loginBtn = (Button)findViewById(R.id.loginBtn);
 		registrationBtn = (Button)findViewById(R.id.registration);
 		noPasswordBtn = (Button)findViewById(R.id.noPassword);
 		
+		
+		final Context context = this;
 		loginBtn.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
+				String username = loginBox.getText().toString();
+				String password = passwordBox.getText().toString();
+				IResponseHandler handler = new LoginHandler(context);
+				httpClient.Autorize(username, password, handler);
 			}
 		});
 		
@@ -53,7 +62,7 @@ public class AccountActivity extends Activity {
         setContentView(R.layout.login_layout);
         
         application = (RateItAndroidApplication)getApplication();
-        client = application.getHttpClient();
+        httpClient = application.getHttpClient();
         InitializeComponent();
     }
 }

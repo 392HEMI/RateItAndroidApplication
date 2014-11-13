@@ -2,9 +2,11 @@ package com.rateit.androidapplication;
 
 import java.util.Stack;
 
+import com.loopj.android.http.PersistentCookieStore;
 import com.rateit.androidapplication.http.HttpClient;
 
 import android.app.Application;
+import android.content.Intent;
 
 public class RateItAndroidApplication extends Application {
 	private HttpClient httpClient;
@@ -25,7 +27,7 @@ public class RateItAndroidApplication extends Application {
 	public HttpClient getHttpClient()
 	{
 		if (httpClient == null)
-			httpClient = new HttpClient(getApplicationContext());
+			httpClient = new HttpClient(getApplicationContext(), this);
 		return httpClient;
 	}
 	
@@ -45,5 +47,12 @@ public class RateItAndroidApplication extends Application {
 	{
 		super();
 		actionSeq = new Stack<IMethod>();
+	}
+	
+	public void Autorize()
+	{
+		Intent intent = new Intent(this, AccountActivity.class);
+		intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+		this.startActivity(intent);
 	}
 }
