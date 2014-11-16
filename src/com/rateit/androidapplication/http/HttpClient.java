@@ -20,8 +20,8 @@ import com.loopj.android.http.*;
 
 public final class HttpClient {
 	private Context context;
-	private final String API_ADDRESS = "http://192.168.1.101/api/call/";
-	private final String AUTH_ADDRESS = "http://192.168.1.101/api/account/";
+	private final String API_ADDRESS = "http://192.168.1.101/WebAPI/api/call/";
+	private final String AUTH_ADDRESS = "http://192.168.1.101/WebAPI/api/account/";
 	private static AsyncHttpClient client;
 	
 	private RateItAndroidApplication application;
@@ -51,7 +51,7 @@ public final class HttpClient {
 	
 	public void PostJSON(String action, String params, JSONObject object, IResponseHandler handler)
 	{
-		String url = API_ADDRESS + action + params;
+		String url = API_ADDRESS + action + "/" + params;
 		ByteArrayEntity entity = null;
 		try
 		{

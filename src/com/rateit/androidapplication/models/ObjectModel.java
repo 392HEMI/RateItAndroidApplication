@@ -14,5 +14,4 @@ public class ObjectModel {
 	public Integer MyMark;
 	public Object[] Properties;
 	public String[] Images;
-	public Comment[] Comments;
 }

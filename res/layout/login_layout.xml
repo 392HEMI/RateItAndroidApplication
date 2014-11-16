@@ -8,7 +8,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:text="@string/loginLabel"
+        android:text="@string/login_layout_login_label"
         android:paddingTop="20dp"
         android:paddingBottom="20dp"
         android:textAppearance="?android:attr/textAppearanceLarge" />
@@ -33,7 +33,7 @@
                 android:layout_marginTop="10dp"
                 android:ems="10"
                 android:gravity="center"
-                android:hint="@string/usernameHint"
+                android:hint="@string/login_layout_username_hint"
                 android:inputType="textPersonName" >
 
                 <requestFocus />
@@ -49,7 +49,7 @@
                 android:layout_marginTop="10dp"
                 android:ems="10"
                 android:gravity="center"
-                android:hint="@string/passwordHint"
+                android:hint="@string/login_layout_password_hint"
                 android:inputType="textPassword" />
 
             <Button
@@ -60,7 +60,7 @@
                 android:layout_marginTop="7dp"
                 android:paddingLeft="30dp"
                 android:paddingRight="30dp"
-                android:text="@string/loginBtn" />
+                android:text="@string/login_layout_login_button" />
         </LinearLayout>
 
         <RelativeLayout
@@ -76,7 +76,7 @@
                 android:background="@android:color/transparent"
                 android:paddingLeft="10dp"
                 android:paddingRight="10dp"
-                android:text="@string/registrationBtn" />
+                android:text="@string/login_layout_registration_button" />
 
             <Button
                 android:id="@+id/noPassword"
@@ -86,7 +86,7 @@
                 android:background="@android:color/transparent"
                 android:paddingLeft="10dp"
                 android:paddingRight="10dp"
-                android:text="@string/noPasswordBtn" />
+                android:text="@string/login_layout_no_password_button" />
         </RelativeLayout>
     </RelativeLayout>
 

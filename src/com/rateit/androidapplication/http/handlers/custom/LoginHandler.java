@@ -6,26 +6,28 @@ import org.apache.http.Header;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 import android.widget.Toast;
 
+import com.rateit.androidapplication.AccountActivity;
 import com.rateit.androidapplication.MainActivity;
+import com.rateit.androidapplication.RateItAndroidApplication;
+import com.rateit.androidapplication.User;
 import com.rateit.androidapplication.http.handlers.IResponseHandler;
 
 public class LoginHandler implements IResponseHandler {
-	private Context context;
+	private AccountActivity activity;
+	private RateItAndroidApplication application;
 	
-	
-	public LoginHandler(Context _context)
+	public LoginHandler(AccountActivity _activity)
 	{
-		context = _context;
+		activity = _activity;
+		application = (RateItAndroidApplication)activity.getApplication();
 	}
 	private class UserInfo
 	{
 		public UUID ID;
-		public String Username;
+		public String Name;
 	}
 	
 	private class ValidationUserResult
@@ -45,13 +47,16 @@ public class LoginHandler implements IResponseHandler {
 			result.Status = object.getInt("Status");
 			UserInfo userInfo;
 			if (object.isNull("User"))
-				userInfo = null;
+				valid = false;
 			else
 			{
 				userInfo = new UserInfo();
 				JSONObject user = object.getJSONObject("User");
 				userInfo.ID = UUID.fromString(user.getString("ID"));
-				userInfo.Username = user.getString("Username");				
+				userInfo.Name = user.getString("Name");
+				if (userInfo.Name == null || userInfo.Name.equalsIgnoreCase(""))
+					valid = false;
+				result.User = userInfo;
 			}
 		}
 		catch (JSONException e)
@@ -65,6 +70,7 @@ public class LoginHandler implements IResponseHandler {
 	
 	@Override
 	public void Start() {
+		activity.disableView();
 	}
 
 	@Override
@@ -75,41 +81,43 @@ public class LoginHandler implements IResponseHandler {
 			object = new JSONObject(response);
 			if (object.getString("Status").equalsIgnoreCase("ok"))
 				object = object.getJSONObject("Content");
+			else
+				return;
 		}
 		catch (JSONException e)
 		{
 		}
-		Log.i("awdwad", response);
-		ValidationUserResult result = ParseResponse(object);
 		
-		switch (result.Status)
+		ValidationUserResult result = ParseResponse(object);
+		int status = (result == null || result.User == null) ? 0 : result.Status;
+		
+		switch (status)
 		{
-		case 0:
-		{
-			Toast.makeText(context, "Неверный логин или пароль", Toast.LENGTH_LONG).show();
-			break;
+			case 1:
+				User user = new User(result.User.ID, result.User.Name);
+				application.setUser(user);
+				
+				Intent intent = new Intent(activity, MainActivity.class);
+				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+				activity.startActivity(intent);
+				break;
+			case 2:
+				Toast.makeText(activity, "Учетная запись не активирована", Toast.LENGTH_LONG).show();
+				break;
+			case 3:
+				Toast.makeText(activity, "Данный пользователь удален", Toast.LENGTH_LONG).show();
+				break;
+			default:
+			case 0:
+				Toast.makeText(activity, "Неверный логин или пароль", Toast.LENGTH_LONG).show();
+				break;
 		}
-		case 1:
-		{
-			Intent intent = new Intent(context, MainActivity.class);
-			context.startActivity(intent);
-			break;
-		}
-		case 2:
-		{
-			Toast.makeText(context, "Учетная запись не активирована", Toast.LENGTH_LONG).show();
-			break;
-		}
-		case 3:
-		{
-			Toast.makeText(context, "Данный пользователь удален", Toast.LENGTH_LONG).show();
-			break;
-		}
-		}
+		activity.enableView();
 	}
 
 	@Override
 	public void Failure(int statusCode, Throwable error, String content) {
-		Log.i("awdawd", Integer.toString(statusCode));
+		Toast.makeText(activity, "Невозможно подключиться к службе", Toast.LENGTH_LONG).show();
+		activity.enableView();
 	}
 }

@@ -3,10 +3,42 @@
 
     <string name="app_name">RateItAndroidApplication</string>
 
-    <string name="loginLabel">Вход</string>
-	<string name="usernameHint">Имя пользователя</string>
-    <string name="passwordHint">Пароль</string>
-    <string name="loginBtn">Вход</string>
-    <string name="registrationBtn">Регистрация</string>
-    <string name="noPasswordBtn">Забыли пароль?</string>
+    <string name="user_avatar_cd">Аватар</string>
+    <string name="logo_cd">Логотип</string>
+    
+    <string name="login_layout_login_label">Вход</string>
+	<string name="login_layout_username_hint">Имя пользователя</string>
+    <string name="login_layout_password_hint">Пароль</string>
+    <string name="login_layout_login_button">Вход</string>
+    <string name="login_layout_registration_button">Регистрация</string>
+    <string name="login_layout_no_password_button">Забыли пароль?</string>
+
+    <string name="registration_layout_register_label">Регистрация</string>
+	<string name="registration_layout_username_hint">Имя пользователя</string>    
+    <string name="registration_layout_email_hint">E-mail</string>
+    <string name="registration_layout_name_hint">Имя</string>
+    <string name="registration_layout_surname_hint">Фамилия</string>
+    <string name="registration_layout_password_hint">Пароль</string>
+    <string name="registration_layout_confirmPassword_hint">Подтверждение пароля</string>
+    <string name="registration_layout_personalData_label">Персональные данные</string>
+    <string name="registration_layout_password_label">Пароли</string>
+    <string name="registration_layout_register_button">Зарегистрироваться</string>
+    
+    <string name="no_password_layout_noPasswordInfo_label">Введите ваш e-mail адрес, указанный при регистрации, на который будет отправлено письмо с дальнейшими указаниями по восстановлению пароля</string>
+    <string name="no_password_layout_email_hint">E-mail</string>
+    <string name="no_password_layout_noPassword_label">Восстановление пароля</string>
+    <string name="no_password_layout_getPassword_button">Восстановить пароль</string>
+    
+
+    <string name="object_view_layout_rating_label">0.0</string>
+    <string name="object_view_layout_properties_tab_label">Раздел находится в разработке</string>
+    <string name="object_view_layout_comment_button">Добавить комментарий</string>
+    
+
+    <string name="comment_row_layout_up_rating_cd">Повышение рейтинга</string>
+    <string name="comment_row_layout_down_rating_cd">Понижение рейтинга</string>
+    
+    <string name="comment_editor_dialog_ok_button">Добавить комментарий</string>
+    
+    <string name="loading_row_layout_loading_label">Загрузка данных...</string>
 </resources>
