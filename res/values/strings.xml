@@ -2,7 +2,10 @@
 <resources>
 
     <string name="app_name">RateItAndroidApplication</string>
-
+    <string name="settings_activity_label">Настройки</string>    
+    
+    <string name="menu_item_settings_label">Настройки</string>
+    
     <string name="user_avatar_cd">Аватар</string>
     <string name="logo_cd">Логотип</string>
     
@@ -41,4 +44,6 @@
     <string name="comment_editor_dialog_ok_button">Добавить комментарий</string>
     
     <string name="loading_row_layout_loading_label">Загрузка данных...</string>
+    
+    <string name="settings_layout_exit_button">Выход</string>
 </resources>

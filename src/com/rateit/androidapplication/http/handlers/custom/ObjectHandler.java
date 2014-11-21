@@ -1,19 +1,14 @@
 package com.rateit.androidapplication.http.handlers.custom;
 
-import java.util.UUID;
-
 import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.util.Log;
 
 import com.rateit.androidapplication.ObjectActivity;
 import com.rateit.androidapplication.http.handlers.IResponseHandler;
-import com.rateit.androidapplication.models.Comment;
 import com.rateit.androidapplication.models.ObjectModel;
-import com.rateit.androidapplication.models.User;
 
 public class ObjectHandler implements IResponseHandler {
 	private ObjectModel ParseJSON(JSONObject object)
@@ -35,7 +30,7 @@ public class ObjectHandler implements IResponseHandler {
 			//model.Properties = new Object[properties_count];
 			model.Images = new String[images_count];
 			
-			JSONObject user;
+			//JSONObject user;
 			//for (int i = 0; i < properties_count; i++)
 			//{
 				

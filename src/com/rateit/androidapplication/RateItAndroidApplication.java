@@ -2,7 +2,6 @@ package com.rateit.androidapplication;
 
 import java.util.Stack;
 
-import com.loopj.android.http.PersistentCookieStore;
 import com.rateit.androidapplication.http.HttpClient;
 
 import android.app.Application;
@@ -49,9 +48,11 @@ public class RateItAndroidApplication extends Application {
 		actionSeq = new Stack<IMethod>();
 	}
 	
-	public void Autorize()
+	public void Autorize(boolean clearTop)
 	{
 		Intent intent = new Intent(this, AccountActivity.class);
+		if (clearTop)
+			intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 		intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 		this.startActivity(intent);
 	}

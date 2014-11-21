@@ -2,13 +2,16 @@ package com.rateit.androidapplication;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collection;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.rateit.androidapplication.components.CustomScrollView;
-import com.rateit.androidapplication.dialogs.CommentDialog;
+import com.rateit.androidapplication.dialogs.CreateCommentDialog;
 import com.rateit.androidapplication.http.HttpClient;
+import com.rateit.androidapplication.http.handlers.IResponseHandler;
+import com.rateit.androidapplication.http.handlers.custom.CreateCommentHandler;
 import com.rateit.androidapplication.http.handlers.custom.GetCommentsHandler;
 import com.rateit.androidapplication.http.handlers.custom.IFileDownloadCompleteHandler;
 import com.rateit.androidapplication.http.handlers.custom.ObjectHandler;
@@ -61,6 +64,30 @@ public class ObjectActivity extends RateItActivity {
 		
 	}
 	
+	public View setupUserCommentRow(View view, final Comment comment)
+	{
+	    final ImageView avatar = (ImageView)view.findViewById(R.id.avatar);
+	    TextView name = (TextView)view.findViewById(R.id.name);
+	    TextView surname = (TextView)view.findViewById(R.id.surname);
+	    TextView likesCount = (TextView)view.findViewById(R.id.likesCount);
+	    TextView text = (TextView)view.findViewById(R.id.text);
+	    
+	    surname.setText(comment.User.Surname);
+	    name.setText(comment.User.Name);
+	    likesCount.setText(Integer.toString(comment.Likes));
+	    text.setText(comment.Text);
+	    
+	    httpClient.DownloadImage("http://192.168.1.101/Images/no_avatar.png", "no_avatar.png", "avatars", new IFileDownloadCompleteHandler() {
+			@Override
+			public void Complete(File file) {
+				BitmapFactory.Options options = new BitmapFactory.Options();
+				options.inPreferredConfig = Bitmap.Config.ARGB_8888;
+				Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath(), options);
+				avatar.setImageBitmap(bitmap);
+			}
+		});
+	    return view;
+	}
 	public View setupCommentRow(View view, final Comment comment)
 	{
 	    final ImageView avatar = (ImageView)view.findViewById(R.id.avatar);
@@ -199,8 +226,6 @@ public class ObjectActivity extends RateItActivity {
 			}
 		});
 		
-		// Init scrollView
-		
 		final TabHost th = tabhost;
 		scrollView.setOnScrollEndListener(new CustomScrollView.OnScrollEndListener() {
 			@Override
@@ -208,21 +233,17 @@ public class ObjectActivity extends RateItActivity {
 				int tab = th.getCurrentTab();
 				if (tab == 1)
 				{
-					//if (loading)
-					//	return;
-					//loading = true;
-					//commentList.addView(loadingView);
-					//int nextPage = commentsPage + 1;
-					//GetComments(nextPage, commentsPageSize);
-					//commentList.removeView(loadingView);
+					getComments(commentsPage + 1, commentsPageSize);
 				}
 			}
 		});
 		
+		
 		commentBtn.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
-				CommentDialog dlg = new CommentDialog(thisActivity);
+				IResponseHandler handler = new CreateCommentHandler(thisActivity);
+				CreateCommentDialog dlg = new CreateCommentDialog(thisActivity, model.ID, handler);
 				dlg.show();
 			}
 		});
@@ -247,28 +268,48 @@ public class ObjectActivity extends RateItActivity {
     
     private int commentsPage;
     private int commentsPageSize;
+    
+    private Comment userComment;
     private ArrayList<Comment> comments;
-    public void addComments(Comment[] _comments, boolean refreshView)
+     
+    public void setUserComment(Comment comment)
+    {
+    	userComment = comment;
+    }
+    
+    public void addComments(Collection<Comment> _comments, boolean incPage, boolean refreshView)
     {
 		for (Comment c : _comments)
-			comments.add(c);
+			if (userComment == null || c.User.ID != userComment.User.ID)
+				comments.add(c);
+		
 		if (refreshView)
 			displayComments();
+		if (incPage)
+			commentsPage = commentsPage + 1;
     }
+    
     public void displayComments()
     {
 		commentList.removeAllViewsInLayout();
 		LayoutInflater inflater = getLayoutInflater();
 		View v;
+		
+		if (userComment != null)
+		{
+			v = inflater.inflate(R.layout.user_comment_row_layout, commentList, false);
+			v = setupUserCommentRow(v, userComment);
+			commentList.addView(v);
+		}
+		
 		for (Comment c : comments)
 		{
-			Log.i("adwaw", "awdaw");
 			v = inflater.inflate(R.layout.comment_row_layout, commentList, false);
 			v = setupCommentRow(v, c);
 			commentList.addView(v);
 		}
     }   
-    
+
     private void getComments(int pageNumber, int pageSize)
     {
     	JSONObject object = new JSONObject();
@@ -283,20 +324,6 @@ public class ObjectActivity extends RateItActivity {
 		httpClient.PostJSON("GetComments", Integer.toString(model.ID), object, new GetCommentsHandler(this));
     }
 
-	private void createComment(String text)
-	{
-		RateItAndroidApplication application = (RateItAndroidApplication)getApplication();
-		JSONObject object = new JSONObject();
-		
-		try
-		{
-			object.put("Text", text);
-		}
-		catch (JSONException e)
-		{
-		}
-		//httpClient.PostJSON("CreateComment", Integer.toString(model.ID), object, new CreateCommentHandler(this));
-	}
     
 	private void showCommentsTab()
 	{

@@ -1,22 +1,40 @@
 package com.rateit.androidapplication;
 
-import android.app.Activity;
-import android.app.Dialog;
+import android.content.Intent;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 
-public class RateItActivity extends Activity {
-	private Dialog dlg;
-	public void disableView()
+public class RateItActivity extends LockableActivity {
+	
+	public RateItAndroidApplication GetRateItApplication()
 	{
-		if (dlg == null)
-			dlg = new Dialog(this, R.style.full_screen_dialog);
-		dlg.setCancelable(false);
-		dlg.setContentView(R.layout.loading_dialog_layout);
-		dlg.show();
+		return (RateItAndroidApplication)getApplication();
 	}
 	
-	public void enableView()
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+	    MenuInflater inflater = getMenuInflater();
+	    inflater.inflate(R.menu.menu_layout, menu);
+	    return true;
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+	    // Handle item selection
+	    switch (item.getItemId()) {
+	    case R.id.settings:
+	        showSettings();
+	        return true;
+	    default:
+	        return super.onOptionsItemSelected(item);
+	    }
+	}
+	
+	private void showSettings()
 	{
-		if (dlg != null)
-			dlg.hide();
+		Intent intent = new Intent(this, SettingsActivity.class);
+		intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+		startActivity(intent);
 	}
 }

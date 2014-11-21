@@ -88,6 +88,12 @@ public final class HttpClient {
 			client.post(context, url, entity, "application/json", new HttpResponseHandler(handler, application));
 	}
 	
+	public void SignOut(IResponseHandler handler)
+	{
+		String url = AUTH_ADDRESS + "SignOut";
+		executeRequest(url, handler);
+	}
+	
 	public HttpClient(Context _context, RateItAndroidApplication _application)
 	{
 		client = new AsyncHttpClient();

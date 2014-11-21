@@ -1,13 +1,12 @@
 package com.rateit.androidapplication.http.handlers.custom;
 
+import java.util.ArrayList;
 import java.util.UUID;
 
 import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import android.util.Log;
 
 import com.rateit.androidapplication.ObjectActivity;
 import com.rateit.androidapplication.http.handlers.IResponseHandler;
@@ -16,10 +15,12 @@ import com.rateit.androidapplication.models.User;
 
 public class GetCommentsHandler implements IResponseHandler {
 	private ObjectActivity activity;
+	private UUID userID;
 	
 	public GetCommentsHandler(ObjectActivity _activity)
 	{
 		activity = _activity;
+		userID = activity.GetRateItApplication().getUser().getID();
 	}
 	
 	private Comment getComment(JSONObject object)
@@ -67,22 +68,29 @@ public class GetCommentsHandler implements IResponseHandler {
 		}
 		catch (JSONException e)
 		{
-			Log.i("awadawd", e.getMessage());
 		}
 		
 		if (array == null)
 			return;
 		
 		int count = array.length();
-		Comment[] comments = new Comment[count];
+		ArrayList<Comment> comments = new ArrayList<Comment>(count);
+		
 		boolean valid = true;
 		try
 		{
 			JSONObject commentObj;
+			Comment comment = new Comment();
 			for (int i = 0; i < count; i++)
 			{
 				commentObj = array.getJSONObject(i);
-				comments[i] = getComment(commentObj);
+				comment = getComment(commentObj);
+				if (comment.User.ID.equals(userID))
+				{
+					activity.setUserComment(comment);
+					continue;
+				}
+				comments.add(comment);
 			}
 		}
 		catch (Exception e)
@@ -90,13 +98,12 @@ public class GetCommentsHandler implements IResponseHandler {
 			valid = false;
 		}
 		if (valid)
-			activity.addComments(comments, true);
+			activity.addComments(comments, true, true);
 	}
 
 	@Override
 	public void Failure(int statusCode, Throwable error, String content) {
 		// TODO Auto-generated method stub
-		Log.i("awdawd", content);
 	}
 
 }

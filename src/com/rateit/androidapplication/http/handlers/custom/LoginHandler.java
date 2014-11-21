@@ -70,7 +70,7 @@ public class LoginHandler implements IResponseHandler {
 	
 	@Override
 	public void Start() {
-		activity.disableView();
+		activity.lock();
 	}
 
 	@Override
@@ -112,12 +112,12 @@ public class LoginHandler implements IResponseHandler {
 				Toast.makeText(activity, "Неверный логин или пароль", Toast.LENGTH_LONG).show();
 				break;
 		}
-		activity.enableView();
+		activity.unlock();
 	}
 
 	@Override
 	public void Failure(int statusCode, Throwable error, String content) {
 		Toast.makeText(activity, "Невозможно подключиться к службе", Toast.LENGTH_LONG).show();
-		activity.enableView();
+		activity.unlock();
 	}
 }

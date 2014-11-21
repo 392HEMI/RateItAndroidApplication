@@ -30,7 +30,7 @@ public final class HttpResponseHandler extends AsyncHttpResponseHandler {
     public void onFailure(int statusCode, Throwable error, String content) {
     	if (statusCode == 401)
     	{
-    		application.Autorize();
+    		application.Autorize(true);
     		return;
     	}
     	handler.Failure(statusCode, error, content);

@@ -10,7 +10,7 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 
-public class AccountActivity extends RateItActivity {
+public class AccountActivity extends LockableActivity {
 	private RateItAndroidApplication application;
 	private HttpClient httpClient;
 	

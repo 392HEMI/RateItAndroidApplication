@@ -12,7 +12,7 @@ import android.os.Bundle;
 import android.widget.ListView;
 import java.util.Stack;
 
-public class MainActivity extends Activity {
+public class MainActivity extends RateItActivity {
 	private ListView listView;
 	private Stack<IMethod> actionSeq;
 	private HttpClient httpClient;
