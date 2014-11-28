@@ -2,8 +2,6 @@ package com.rateit.androidapplication;
 
 import android.app.Activity;
 import android.app.Dialog;
-import android.view.Menu;
-import android.view.MenuInflater;
 
 public class LockableActivity extends Activity {
 	private Dialog dlg;

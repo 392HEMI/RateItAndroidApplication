@@ -16,30 +16,43 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 
-public class CreateCommentDialog extends Dialog {
+public class SetUserCommentDialog extends Dialog {
 	private EditText commentText;
-	private Button okButton;
+	private Button okBtn;
+	private Button cancelBtn;
+	
 	private RateItAndroidApplication application;
 	private int objectID;
 	private IResponseHandler handler;
+	private boolean isNew;
 	
 	private void InitializeComponent()
 	{
 		Window window = getWindow();
 		window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
 		commentText = (EditText)findViewById(R.id.commentText);
-		okButton = (Button)findViewById(R.id.okBtn);
+		okBtn = (Button)findViewById(R.id.okBtn);
+		cancelBtn = (Button)findViewById(R.id.cancelBtn);
 		
-		okButton.setOnClickListener(new View.OnClickListener() {
+		if (isNew)
+			okBtn.setText(R.string.comment_editor_dialog_layout_update_button);
+		
+		okBtn.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				createComment();
+				setComment();
+				hide();
+			}
+		});
+		cancelBtn.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
 				hide();
 			}
 		});
 	}
 	
-	public CreateCommentDialog(RateItActivity activity, int _objectID, IResponseHandler _handler) {
+	public SetUserCommentDialog(RateItActivity activity, int _objectID, IResponseHandler _handler, boolean _isNew) {
 		super(activity, R.style.full_screen_dialog);
 	    requestWindowFeature(Window.FEATURE_NO_TITLE);
 	    setCancelable(false);
@@ -48,14 +61,14 @@ public class CreateCommentDialog extends Dialog {
 	    application = activity.GetRateItApplication();
 	    objectID = _objectID;
 	    handler = _handler;
+	    isNew = _isNew;
 	    InitializeComponent();
 	}
 	
-	private void createComment()
+	private void setComment()
 	{
 		String text = commentText.getText().toString();
 		JSONObject object = new JSONObject();
-		
 		try
 		{
 			object.put("Text", text);
@@ -63,7 +76,8 @@ public class CreateCommentDialog extends Dialog {
 		catch (JSONException e)
 		{
 		}
+		
 		HttpClient httpClient = application.getHttpClient();
-		httpClient.PostJSON("CreateComment", Integer.toString(objectID), object, handler);
+		httpClient.PostJSON("SetUserComment", Integer.toString(objectID), object, handler);
 	}
 }

@@ -7,7 +7,6 @@ import com.rateit.androidapplication.http.handlers.custom.CategoriesHandler;
 import com.rateit.androidapplication.http.handlers.custom.ObjectsHandler;
 import com.rateit.androidapplication.http.handlers.custom.TypesHandler;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.widget.ListView;
 import java.util.Stack;

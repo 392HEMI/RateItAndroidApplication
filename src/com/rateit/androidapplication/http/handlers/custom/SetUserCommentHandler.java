@@ -2,7 +2,6 @@ package com.rateit.androidapplication.http.handlers.custom;
 
 import java.util.UUID;
 
-import org.apache.http.Header;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -13,9 +12,9 @@ import com.rateit.androidapplication.http.handlers.IResponseHandler;
 import com.rateit.androidapplication.models.Comment;
 import com.rateit.androidapplication.models.User;
 
-public class CreateCommentHandler implements IResponseHandler {
+public class SetUserCommentHandler implements IResponseHandler {
 	private ObjectActivity activity;
-	public CreateCommentHandler(ObjectActivity _activity)
+	public SetUserCommentHandler(ObjectActivity _activity)
 	{
 		activity = _activity;
 	}
@@ -58,7 +57,7 @@ public class CreateCommentHandler implements IResponseHandler {
 	}
 	
 	@Override
-	public void Success(int statusCode, Header[] headers, String response)
+	public void Success(int statusCode, String response)
 	{
 		JSONObject object = null;
 		boolean valid = true;

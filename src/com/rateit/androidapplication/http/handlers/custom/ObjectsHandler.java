@@ -1,6 +1,5 @@
 package com.rateit.androidapplication.http.handlers.custom;
 
-import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -12,7 +11,6 @@ import com.rateit.androidapplication.models.ObjectsModel;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -34,7 +32,7 @@ public class ObjectsHandler implements IResponseHandler {
 	}
 
 	@Override
-	public void Success(int statusCode, Header[] headers, String response) {
+	public void Success(int statusCode, String response) {
 		try
 		{
 			JSONObject jsonObj = new JSONObject(response);
@@ -72,14 +70,12 @@ public class ObjectsHandler implements IResponseHandler {
 		}
 		catch (JSONException e)
 		{
-			Log.e("EXEPTION " + getClass(), e.getMessage());
 		}
 	}
 
 	@Override
 	public void Failure(int statusCode, Throwable error, String content) {
 		// TODO Auto-generated method stub
-		
 	}
 	
     private void attachAdapter(final ListView listView, ObjectsModel.GeneralObject[] objects)

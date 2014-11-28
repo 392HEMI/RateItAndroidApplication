@@ -1,6 +1,5 @@
 package com.rateit.androidapplication.http.handlers.custom;
 
-import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -35,7 +34,7 @@ public class CategoriesHandler implements IResponseHandler {
 		
 	}
 	@Override
-	public void Success(int statusCode, Header[] headers, String response) {
+	public void Success(int statusCode, String response) {
 		try
 		{
 			JSONObject jsonObj = new JSONObject(response);

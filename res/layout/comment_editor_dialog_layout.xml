@@ -1,24 +1,35 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@android:color/white"
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
-    android:weightSum="10" >
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <EditText
         android:id="@+id/commentText"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="9"
-        android:ems="10"
-        android:gravity="top|left"
-        android:inputType="textMultiLine" />
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:inputType="textMultiLine" >
 
-    <Button
-        android:id="@+id/okBtn"
+        <requestFocus></requestFocus>
+    </EditText>
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="1" 
-        android:text="@string/comment_editor_dialog_ok_button" />
-
+        android:layout_height="wrap_content" >
+        <Button
+            style="@android:style/ButtonBar"
+            android:id="@+id/okBtn"
+            android:text="@string/comment_editor_dialog_layout_create_button"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:layout_width="0dp"></Button>
+        <Button
+            style="@android:style/ButtonBar"
+            android:id="@+id/cancelBtn"
+            android:text="@string/comment_editor_dialog_layout_cancel_button"
+            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight="1"></Button>
+    </LinearLayout>
 </LinearLayout>

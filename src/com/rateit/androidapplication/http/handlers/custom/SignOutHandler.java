@@ -1,6 +1,5 @@
 package com.rateit.androidapplication.http.handlers.custom;
 
-import org.apache.http.Header;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -24,7 +23,7 @@ public class SignOutHandler implements IResponseHandler {
 	}
 
 	@Override
-	public void Success(int statusCode, Header[] headers, String response) {
+	public void Success(int statusCode, String response) {
 		JSONObject obj = null;
 		boolean valid = true;
 		boolean success = false;

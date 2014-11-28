@@ -2,7 +2,6 @@ package com.rateit.androidapplication.http.handlers.custom;
 
 import java.util.UUID;
 
-import org.apache.http.Header;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -15,7 +14,7 @@ import com.rateit.androidapplication.RateItAndroidApplication;
 import com.rateit.androidapplication.User;
 import com.rateit.androidapplication.http.handlers.IResponseHandler;
 
-public class LoginHandler implements IResponseHandler {
+public class LoginHandler implements IHttpResponseHandler {
 	private AccountActivity activity;
 	private RateItAndroidApplication application;
 	
@@ -74,7 +73,7 @@ public class LoginHandler implements IResponseHandler {
 	}
 
 	@Override
-	public void Success(int statusCode, Header[] headers, String response) {
+	public void Success(int statusCode, String response) {
 		JSONObject object = null;
 		try
 		{

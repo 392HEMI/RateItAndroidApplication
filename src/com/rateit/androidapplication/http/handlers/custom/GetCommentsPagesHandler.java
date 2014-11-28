@@ -3,7 +3,6 @@ package com.rateit.androidapplication.http.handlers.custom;
 import java.util.ArrayList;
 import java.util.UUID;
 
-import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -13,11 +12,11 @@ import com.rateit.androidapplication.http.handlers.IResponseHandler;
 import com.rateit.androidapplication.models.Comment;
 import com.rateit.androidapplication.models.User;
 
-public class GetCommentsHandler implements IResponseHandler {
+public class GetCommentsPagesHandler implements IResponseHandler {
 	private ObjectActivity activity;
 	private UUID userID;
 	
-	public GetCommentsHandler(ObjectActivity _activity)
+	public GetCommentsPagesHandler(ObjectActivity _activity)
 	{
 		activity = _activity;
 		userID = activity.GetRateItApplication().getUser().getID();
@@ -40,7 +39,7 @@ public class GetCommentsHandler implements IResponseHandler {
 			user.Avatar = userObj.getString("Avatar");
 			user.Name = userObj.getString("Name");
 			user.Surname = userObj.getString("Surname");
-		} 
+		}
 		catch (JSONException e)
 		{
 			validObject = false;
@@ -58,7 +57,7 @@ public class GetCommentsHandler implements IResponseHandler {
 	}
 
 	@Override
-	public void Success(int statusCode, Header[] headers, String response) {
+	public void Success(int statusCode, String response) {
 		JSONArray array = null;
 		try
 		{
@@ -98,12 +97,12 @@ public class GetCommentsHandler implements IResponseHandler {
 			valid = false;
 		}
 		if (valid)
-			activity.addComments(comments, true, true);
+			activity.setComments(comments, true);
 	}
 
 	@Override
 	public void Failure(int statusCode, Throwable error, String content) {
-		// TODO Auto-generated method stub
+		activity.unlock();
 	}
 
 }

@@ -8,13 +8,15 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.rateit.androidapplication.components.CustomScrollView;
-import com.rateit.androidapplication.dialogs.CreateCommentDialog;
+import com.rateit.androidapplication.dialogs.SetUserCommentDialog;
 import com.rateit.androidapplication.http.HttpClient;
 import com.rateit.androidapplication.http.handlers.IResponseHandler;
-import com.rateit.androidapplication.http.handlers.custom.CreateCommentHandler;
-import com.rateit.androidapplication.http.handlers.custom.GetCommentsHandler;
+import com.rateit.androidapplication.http.handlers.custom.GetCommentsPageHandler;
+import com.rateit.androidapplication.http.handlers.custom.GetCommentsPagesHandler;
 import com.rateit.androidapplication.http.handlers.custom.IFileDownloadCompleteHandler;
 import com.rateit.androidapplication.http.handlers.custom.ObjectHandler;
+import com.rateit.androidapplication.http.handlers.custom.SetCommentRatingHandler;
+import com.rateit.androidapplication.http.handlers.custom.SetUserCommentHandler;
 import com.rateit.androidapplication.models.Comment;
 import com.rateit.androidapplication.models.ObjectModel;
 
@@ -41,101 +43,13 @@ public class ObjectActivity extends RateItActivity {
 	private HttpClient httpClient;
 	
 	private CustomScrollView scrollView;
-	private TabHost tabhost;
 	private LinearLayout commentList;
 	private Button commentBtn;
-	
-	private View loadingView;
-	private boolean loading;
-	
 	
 	private ObjectModel model;
 	public void setModel(ObjectModel _model)
 	{
 		model = _model;
-	}
-	
-	private void setObjectRating()
-	{
-	}
-	
-	private void setCommentRating(int commentID, boolean up)
-	{
-		
-	}
-	
-	public View setupUserCommentRow(View view, final Comment comment)
-	{
-	    final ImageView avatar = (ImageView)view.findViewById(R.id.avatar);
-	    TextView name = (TextView)view.findViewById(R.id.name);
-	    TextView surname = (TextView)view.findViewById(R.id.surname);
-	    TextView likesCount = (TextView)view.findViewById(R.id.likesCount);
-	    TextView text = (TextView)view.findViewById(R.id.text);
-	    
-	    surname.setText(comment.User.Surname);
-	    name.setText(comment.User.Name);
-	    likesCount.setText(Integer.toString(comment.Likes));
-	    text.setText(comment.Text);
-	    
-	    httpClient.DownloadImage("http://192.168.1.101/Images/no_avatar.png", "no_avatar.png", "avatars", new IFileDownloadCompleteHandler() {
-			@Override
-			public void Complete(File file) {
-				BitmapFactory.Options options = new BitmapFactory.Options();
-				options.inPreferredConfig = Bitmap.Config.ARGB_8888;
-				Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath(), options);
-				avatar.setImageBitmap(bitmap);
-			}
-		});
-	    return view;
-	}
-	public View setupCommentRow(View view, final Comment comment)
-	{
-	    final ImageView avatar = (ImageView)view.findViewById(R.id.avatar);
-	    TextView name = (TextView)view.findViewById(R.id.name);
-	    TextView surname = (TextView)view.findViewById(R.id.surname);
-	    TextView likesCount = (TextView)view.findViewById(R.id.likesCount);
-	    ImageButton upButton = (ImageButton)view.findViewById(R.id.upRating);
-	    ImageButton downButton = (ImageButton)view.findViewById(R.id.downRating);
-	    TextView text = (TextView)view.findViewById(R.id.text);
-	    
-	    surname.setText(comment.User.Surname);
-	    name.setText(comment.User.Name);
-	    likesCount.setText(Integer.toString(comment.Likes));
-	    text.setText(comment.Text);
-	    
-	    if (comment.Like == null || !comment.Like)
-	    {
-		    upButton.setOnClickListener(new OnClickListener() {
-				@Override
-				public void onClick(View v) {
-				}
-			});
-	    }
-	    else
-	    	upButton.setImageResource(android.R.color.transparent);
-	    
-	    
-	    if (comment.Like == null || comment.Like)
-	    {
-		    downButton.setOnClickListener(new OnClickListener() {
-				@Override
-				public void onClick(View v) {
-				}
-			});
-	    }
-	    else
-	    	downButton.setImageResource(android.R.color.transparent);
-	    
-	    httpClient.DownloadImage("http://192.168.1.101/Images/no_avatar.png", "no_avatar.png", "avatars", new IFileDownloadCompleteHandler() {
-			@Override
-			public void Complete(File file) {
-				BitmapFactory.Options options = new BitmapFactory.Options();
-				options.inPreferredConfig = Bitmap.Config.ARGB_8888;
-				Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath(), options);
-				avatar.setImageBitmap(bitmap);
-			}
-		});
-	    return view;
 	}
 	
 	private void showPropertiesTab()
@@ -157,26 +71,23 @@ public class ObjectActivity extends RateItActivity {
 		comments = new ArrayList<Comment>();
 		commentsPage = 0;
 		commentsPageSize = 10;
-		loading = false;
 		
 		// Init components
 		scrollView = (CustomScrollView)findViewById(R.id.scrollView);
 		commentList = (LinearLayout)findViewById(R.id.commentList);
 		commentBtn = (Button)findViewById(R.id.commentBtn);
 		
-		loadingView = inflater.inflate(R.layout.loading_row_layout, scrollView, false);
-		
 		final ImageView logo = (ImageView)findViewById(R.id.logo);
 		final TextView title = (TextView)findViewById(R.id.titleText);
 		final TextView rating = (TextView)findViewById(R.id.rating);
 		final RatingBar ratingStars = (RatingBar)findViewById(R.id.ratingStarts);
+		final TabHost tabhost = (TabHost)findViewById(android.R.id.tabhost);
 		
 		// Setup fields
 		title.setText(model.Title);
 		double _rate = model.Rating == null ? 0.0 : model.Rating;
 		rating.setText(Double.toString(_rate));
 		ratingStars.setRating((float)_rate);
-		TabHost tabhost = (TabHost)findViewById(android.R.id.tabhost);
 		
 	    httpClient.DownloadImage("http://192.168.1.101/Images/" + model.Logo, model.Logo, "avatars", new IFileDownloadCompleteHandler() {
 			@Override
@@ -226,11 +137,10 @@ public class ObjectActivity extends RateItActivity {
 			}
 		});
 		
-		final TabHost th = tabhost;
 		scrollView.setOnScrollEndListener(new CustomScrollView.OnScrollEndListener() {
 			@Override
 			public void onScrollDown(View v) {
-				int tab = th.getCurrentTab();
+				int tab = tabhost.getCurrentTab();
 				if (tab == 1)
 				{
 					getComments(commentsPage + 1, commentsPageSize);
@@ -238,12 +148,12 @@ public class ObjectActivity extends RateItActivity {
 			}
 		});
 		
-		
 		commentBtn.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
-				IResponseHandler handler = new CreateCommentHandler(thisActivity);
-				CreateCommentDialog dlg = new CreateCommentDialog(thisActivity, model.ID, handler);
+				boolean isNew = hasUserComment();
+				IResponseHandler handler = new SetUserCommentHandler(thisActivity);
+				SetUserCommentDialog dlg = new SetUserCommentDialog(thisActivity, model.ID, handler, isNew);
 				dlg.show();
 			}
 		});
@@ -261,6 +171,7 @@ public class ObjectActivity extends RateItActivity {
         Bundle bundle = intent.getExtras();
         int objID = bundle.getInt("objectID");
         httpClient.executeAction("GetObject", Integer.toString(objID), new ObjectHandler(this));
+        lock();
     }
     
     
@@ -275,6 +186,36 @@ public class ObjectActivity extends RateItActivity {
     public void setUserComment(Comment comment)
     {
     	userComment = comment;
+    }
+    
+    private boolean hasUserComment()
+    {
+    	return userComment != null;
+    }
+    
+    public void refreshComments()
+    {
+    	JSONObject object = new JSONObject();
+    	try
+    	{
+			object.put("PageNumber", commentsPage);
+			object.put("PageSize", commentsPageSize);
+		}
+    	catch (JSONException e)
+		{
+		}
+    	IResponseHandler handler = new GetCommentsPagesHandler(this);
+    	httpClient.PostJSON("GetCommentsPages", Integer.toString(model.ID), object, handler);
+    }
+    
+    public void setComments(Collection<Comment> _comments, boolean refreshView)
+    {
+    	commentsPage = _comments.size() / commentsPageSize;
+    	if (_comments.size() % commentsPageSize > 0)
+    		commentsPage = commentsPage + 1;
+    	comments.addAll(_comments);
+    	if (refreshView)
+    		displayComments();
     }
     
     public void addComments(Collection<Comment> _comments, boolean incPage, boolean refreshView)
@@ -300,6 +241,9 @@ public class ObjectActivity extends RateItActivity {
 			v = inflater.inflate(R.layout.user_comment_row_layout, commentList, false);
 			v = setupUserCommentRow(v, userComment);
 			commentList.addView(v);
+			
+			final Button commentBtn = (Button)findViewById(R.id.commentBtn);
+			commentBtn.setText("Изменить комментарий");
 		}
 		
 		for (Comment c : comments)
@@ -309,7 +253,7 @@ public class ObjectActivity extends RateItActivity {
 			commentList.addView(v);
 		}
     }   
-
+   
     private void getComments(int pageNumber, int pageSize)
     {
     	JSONObject object = new JSONObject();
@@ -321,13 +265,95 @@ public class ObjectActivity extends RateItActivity {
 		catch (JSONException e)
 		{
 		}
-		httpClient.PostJSON("GetComments", Integer.toString(model.ID), object, new GetCommentsHandler(this));
+		httpClient.PostJSON("GetComments", Integer.toString(model.ID), object, new GetCommentsPageHandler(this));
     }
 
-    
 	private void showCommentsTab()
 	{
+		userComment = null;
+		comments.clear();
+		
 		commentsPage = 1;
 		getComments(commentsPage, commentsPageSize);
+	}
+
+	public View setupUserCommentRow(View view, final Comment comment)
+	{
+	    final ImageView avatar = (ImageView)view.findViewById(R.id.avatar);
+	    TextView name = (TextView)view.findViewById(R.id.name);
+	    TextView surname = (TextView)view.findViewById(R.id.surname);
+	    TextView likesCount = (TextView)view.findViewById(R.id.likesCount);
+	    TextView text = (TextView)view.findViewById(R.id.text);
+	    
+	    surname.setText(comment.User.Surname);
+	    name.setText(comment.User.Name);
+	    likesCount.setText(Integer.toString(comment.Likes));
+	    text.setText(comment.Text);
+	    
+	    httpClient.DownloadImage("http://192.168.1.101/Images/no_avatar.png", "no_avatar.png", "avatars", new IFileDownloadCompleteHandler() {
+			@Override
+			public void Complete(File file) {
+				BitmapFactory.Options options = new BitmapFactory.Options();
+				options.inPreferredConfig = Bitmap.Config.ARGB_8888;
+				Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath(), options);
+				avatar.setImageBitmap(bitmap);
+			}
+		});
+	    return view;
+	}
+
+	public View setupCommentRow(View view, final Comment comment)
+	{
+		final ObjectActivity thisActivity = this;
+		
+	    final ImageView avatar = (ImageView)view.findViewById(R.id.avatar);
+	    TextView name = (TextView)view.findViewById(R.id.name);
+	    TextView surname = (TextView)view.findViewById(R.id.surname);
+	    TextView likesCount = (TextView)view.findViewById(R.id.likesCount);
+	    ImageButton upButton = (ImageButton)view.findViewById(R.id.upRating);
+	    ImageButton downButton = (ImageButton)view.findViewById(R.id.downRating);
+	    TextView text = (TextView)view.findViewById(R.id.text);
+	    
+	    surname.setText(comment.User.Surname);
+	    name.setText(comment.User.Name);
+	    likesCount.setText(Integer.toString(comment.Likes));
+	    text.setText(comment.Text);
+	    
+	    if (comment.Like == null || !comment.Like)
+	    {
+		    upButton.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					IResponseHandler handler = new SetCommentRatingHandler(thisActivity);
+					httpClient.executeAction("SetCommentRating", Integer.toString(comment.ID), handler);
+				}
+			});
+	    }
+	    else
+	    	upButton.setImageResource(android.R.color.transparent);
+	    
+	    if (comment.Like == null || comment.Like)
+	    {
+		    downButton.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					IResponseHandler handler = new SetCommentRatingHandler(thisActivity);
+					httpClient.executeAction("SetCommentRating", Integer.toString(comment.ID), handler);
+				}
+			});
+	    }
+	    else
+	    	downButton.setImageResource(android.R.color.transparent);
+	    
+	    httpClient.DownloadImage("http://192.168.1.101/Images/no_avatar.png", "no_avatar.png", "avatars", new IFileDownloadCompleteHandler() {
+			@Override
+			public void Complete(File file) {
+				BitmapFactory.Options options = new BitmapFactory.Options();
+				options.inPreferredConfig = Bitmap.Config.ARGB_8888;
+				Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath(), options);
+				avatar.setImageBitmap(bitmap);
+			}
+		});
+	    return view;
 	}
 }

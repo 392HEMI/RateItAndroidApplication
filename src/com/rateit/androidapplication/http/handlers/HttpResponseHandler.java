@@ -1,16 +1,14 @@
 package com.rateit.androidapplication.http.handlers;
 
-import org.apache.http.Header;
-
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.rateit.androidapplication.RateItAndroidApplication;
 
 
 public final class HttpResponseHandler extends AsyncHttpResponseHandler {
-	private IResponseHandler handler;
+	private IHttpResponseHandler handler;
 	private RateItAndroidApplication application;
 	
-	public HttpResponseHandler(IResponseHandler _handler, RateItAndroidApplication _application)
+	public HttpResponseHandler(RateItAndroidApplication _application, IHttpResponseHandler _handler)
 	{
 		handler = _handler;
 		application = _application;
@@ -18,12 +16,17 @@ public final class HttpResponseHandler extends AsyncHttpResponseHandler {
 
 	@Override
     public void onStart() {
-        handler.Start();
+        handler.onStart();
     }
+	
+	public void onFinish()
+	{
+		handler.onFinish();
+	}
 
     @Override
-    public void onSuccess(int statusCode, Header[] headers, String response) {
-    	handler.Success(statusCode, headers, response);
+    public void onSuccess(int statusCode, String response) {
+    	handler.onSuccess(statusCode, response);
     }
 
     @Override
@@ -33,6 +36,6 @@ public final class HttpResponseHandler extends AsyncHttpResponseHandler {
     		application.Autorize(true);
     		return;
     	}
-    	handler.Failure(statusCode, error, content);
+    	handler.onFailure(statusCode, error, content);
     }
 }

@@ -31,17 +31,17 @@
     <string name="no_password_layout_email_hint">E-mail</string>
     <string name="no_password_layout_noPassword_label">Восстановление пароля</string>
     <string name="no_password_layout_getPassword_button">Восстановить пароль</string>
-    
 
     <string name="object_view_layout_rating_label">0.0</string>
     <string name="object_view_layout_properties_tab_label">Раздел находится в разработке</string>
     <string name="object_view_layout_comment_button">Добавить комментарий</string>
-    
+
+    <string name="comment_editor_dialog_layout_create_button">Добавить</string>
+    <string name="comment_editor_dialog_layout_update_button">Изменить</string>
+    <string name="comment_editor_dialog_layout_cancel_button">Отмена</string>
 
     <string name="comment_row_layout_up_rating_cd">Повышение рейтинга</string>
     <string name="comment_row_layout_down_rating_cd">Понижение рейтинга</string>
-    
-    <string name="comment_editor_dialog_ok_button">Добавить комментарий</string>
     
     <string name="loading_row_layout_loading_label">Загрузка данных...</string>
     

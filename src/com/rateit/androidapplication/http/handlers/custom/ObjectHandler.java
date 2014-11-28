@@ -1,6 +1,5 @@
 package com.rateit.androidapplication.http.handlers.custom;
 
-import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -61,7 +60,7 @@ public class ObjectHandler implements IResponseHandler {
 	}
 
 	@Override
-	public void Success(int statusCode, Header[] headers, String response) {
+	public void Success(int statusCode, String response) {
 		JSONObject object = null;
 		ObjectModel model = null;
 		try
@@ -78,10 +77,12 @@ public class ObjectHandler implements IResponseHandler {
 		catch (JSONException e)
 		{
 		}
+		_activity.unlock();
 	}
 
 	@Override
 	public void Failure(int statusCode, Throwable error, String content) {
+		_activity.unlock();		
+		_activity.onBackPressed();
 	}
-
 }

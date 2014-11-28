@@ -2,7 +2,6 @@ package com.rateit.androidapplication.http.handlers.custom;
 
 import java.util.UUID;
 
-import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -53,7 +52,7 @@ public class CommentsHandler implements IResponseHandler {
 	}
 
 	@Override
-	public void Success(int statusCode, Header[] headers, String response) {
+	public void Success(int statusCode, String response) {
 		JSONArray array = null;
 		try
 		{

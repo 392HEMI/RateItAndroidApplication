@@ -13,9 +13,12 @@ import com.rateit.androidapplication.RateItAndroidApplication;
 import com.rateit.androidapplication.http.handlers.HttpFileResponseHandler;
 import com.rateit.androidapplication.http.handlers.HttpResponseHandler;
 import com.rateit.androidapplication.http.handlers.IFileResponseHandler;
-import com.rateit.androidapplication.http.handlers.IResponseHandler;
+import com.rateit.androidapplication.http.handlers.IHttpResponseHandler;
+import com.rateit.androidapplication.http.handlers.IJsonResponseHandler;
+import com.rateit.androidapplication.http.handlers.JsonResponseHandler;
 import com.rateit.androidapplication.http.handlers.custom.IFileDownloadCompleteHandler;
 import com.rateit.androidapplication.http.handlers.custom.ImageResponseHandler;
+import com.rateit.androidapplication.http.handlers.custom.LoginHandler;
 import com.loopj.android.http.*;
 
 public final class HttpClient {
@@ -25,11 +28,6 @@ public final class HttpClient {
 	private static AsyncHttpClient client;
 	
 	private RateItAndroidApplication application;
-	
-	private void executeRequest(String url, IResponseHandler handler)
-	{
-		client.get(url, new HttpResponseHandler(handler, application));
-	}
 
 	private void downloadFile(String url, String[] allowedTypes, IFileResponseHandler handler)
 	{
@@ -43,15 +41,49 @@ public final class HttpClient {
 		downloadFile(url, allowedTypes, ih);
 	}
 	
-	public void executeAction(String action, String params, IResponseHandler handler)
+	private String getAPIActionUrl(String action, String params)
 	{
-		String url = API_ADDRESS + action + "/" + params;
-		executeRequest(url, handler);
+		if (params.charAt(0) != '/')
+			params = '/' + params;
+		else
+		{
+			boolean b = false;
+			int i;
+			for (i = 1; i < params.length(); i++)
+				if (params.charAt(i) == '/')
+					b = true;
+				else
+				{
+					b = false;
+					break;
+				}
+			params = params.substring(i - 1);	
+		}
+		return action + params;
 	}
 	
-	public void PostJSON(String action, String params, JSONObject object, IResponseHandler handler)
+	private void get(String url, ResponseHandlerInterface responseHandler)
 	{
-		String url = API_ADDRESS + action + "/" + params;
+		client.get(url, responseHandler);
+	}
+	
+	private void get(String url, RequestParams requestParams, ResponseHandlerInterface responseHandler)
+	{
+		client.get(url, requestParams, responseHandler);
+	}	
+
+	private void post(String url, ResponseHandlerInterface responseHandler)
+	{
+		client.post(url, responseHandler);
+	}
+	
+	private void post(String url, RequestParams requestParams, ResponseHandlerInterface responseHandler)
+	{
+		client.post(url, requestParams, responseHandler);
+	}
+	
+	private void post(String url, JSONObject object, ResponseHandlerInterface responseHandler)
+	{
 		ByteArrayEntity entity = null;
 		try
 		{
@@ -61,10 +93,40 @@ public final class HttpClient {
 		{
 			e.printStackTrace();
 		}
-		client.post(context, url, entity, "application/json", new HttpResponseHandler(handler, application));
+		client.post(context, url, entity, "application/json", responseHandler);
 	}
 	
-	public void Autorize(String username, String password, IResponseHandler handler)
+	public void get(String action, String urlParams, IHttpResponseHandler responseHandler)
+	{
+		String url = getAPIActionUrl(action, urlParams);
+		HttpResponseHandler handler = new HttpResponseHandler(application, responseHandler);
+		get(url, handler);
+	}
+	
+	public void get(String action, String urlParams, RequestParams requestParams, IHttpResponseHandler responseHandler)
+	{
+		String url = getAPIActionUrl(action, urlParams);
+		HttpResponseHandler handler = new HttpResponseHandler(application, responseHandler);
+		get(url, requestParams, handler);
+	}
+	
+	public <T> void get(Class<T> cls, String action, String urlParams, RequestParams requestParams, IJsonResponseHandler<T> responseHandler)
+	{
+		String url = getAPIActionUrl(action, urlParams);
+		JsonResponseHandler<T> handler = new JsonResponseHandler<T>(application, cls, responseHandler);
+		get(url, requestParams, handler);
+	}
+	
+	public <T> void post(Class<T> cls, String action, String params, JSONObject object, IJsonResponseHandler<T> responseHandler)
+	{
+		String url = getAPIActionUrl(action, params);
+		JsonResponseHandler<T> handler = new JsonResponseHandler<T>(application, cls, responseHandler); 
+		post(url, object, handler);
+	}
+	
+	
+	// Авторизация
+	public void Autorize(String username, String password, IHttpResponseHandler handler)
 	{
 		String url = AUTH_ADDRESS + "login";
 		JSONObject obj = new JSONObject();
@@ -76,22 +138,15 @@ public final class HttpClient {
 		catch (JSONException e)
 		{
 		}
-		ByteArrayEntity entity = null;
-		try
-		{
-			entity = new ByteArrayEntity(obj.toString().getBytes("UTF-8"));
-		}
-		catch (UnsupportedEncodingException e)
-		{
-		}
-		if (entity != null)
-			client.post(context, url, entity, "application/json", new HttpResponseHandler(handler, application));
+		Class<?> cls = LoginHandler.UserInfo.class;
+		post(url, obj, new JsonResponseHandler(application, cls, handler));
 	}
 	
-	public void SignOut(IResponseHandler handler)
+	public void SignOut(IHttpResponseHandler responseHandler)
 	{
 		String url = AUTH_ADDRESS + "SignOut";
-		executeRequest(url, handler);
+		HttpResponseHandler handler = new HttpResponseHandler(application, responseHandler);
+		get(url, handler);
 	}
 	
 	public HttpClient(Context _context, RateItAndroidApplication _application)
