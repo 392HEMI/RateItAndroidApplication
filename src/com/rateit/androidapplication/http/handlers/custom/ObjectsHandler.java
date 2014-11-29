@@ -1,12 +1,8 @@
 package com.rateit.androidapplication.http.handlers.custom;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import com.rateit.androidapplication.ObjectActivity;
 import com.rateit.androidapplication.adapters.ObjectsAdapter;
-import com.rateit.androidapplication.http.handlers.IResponseHandler;
+import com.rateit.androidapplication.http.handlers.IJsonResponseHandler;
 import com.rateit.androidapplication.models.ObjectsModel;
 
 import android.app.Activity;
@@ -16,7 +12,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.AdapterView.OnItemClickListener;
 
-public class ObjectsHandler implements IResponseHandler {
+public class ObjectsHandler implements IJsonResponseHandler<ObjectsModel> {
 	private Activity _activity;
 	private ListView _listView;
 	
@@ -27,54 +23,26 @@ public class ObjectsHandler implements IResponseHandler {
 	}
 	
 	@Override
-	public void Start() {
+	public void onStart() {
 		// TODO Auto-generated method stub
 	}
 
 	@Override
-	public void Success(int statusCode, String response) {
-		try
-		{
-			JSONObject jsonObj = new JSONObject(response);
-			if (jsonObj.getString("Status").equalsIgnoreCase("ok"))
-				jsonObj = jsonObj.getJSONObject("Content");
-			else
-			{
-				// error
-			}
-			JSONObject type = jsonObj.getJSONObject("Type");
-			ObjectsModel model = new ObjectsModel();
-			
-			int typeID = type.getInt("ID");
-			String typeTitle = type.getString("Title");
-			ObjectsModel.Type typeObj = model.new Type(typeID, typeTitle);
-			
-			JSONArray objects = jsonObj.getJSONArray("Objects");
-			JSONObject object;
-			int count = objects.length();
-			
-			ObjectsModel.GeneralObject[] objs = new ObjectsModel.GeneralObject[count];
-			
-			for (int i = 0; i < objects.length(); i++)
-			{
-				object = objects.getJSONObject(i);
-				
-				int id = object.getInt("ID");
-				String title = object.getString("Title");
-				
-				objs[i] = model.new GeneralObject(id, title);
-			}
-			model.type = typeObj;
-			model.objects = objs;
-			attachAdapter(_listView, model.objects);
-		}
-		catch (JSONException e)
-		{
-		}
+	public void onFinish() {
+		// TODO Auto-generated method stub
 	}
 
 	@Override
-	public void Failure(int statusCode, Throwable error, String content) {
+	public void onSuccess(int statusCode, ObjectsModel[] model) {
+	}	
+	
+	@Override
+	public void onSuccess(int statusCode, ObjectsModel model) {
+		attachAdapter(_listView, model.objects);
+	}
+
+	@Override
+	public void onFailure(int statusCode, Throwable error, String content) {
 		// TODO Auto-generated method stub
 	}
 	

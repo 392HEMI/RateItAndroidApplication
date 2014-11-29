@@ -2,12 +2,16 @@ package com.rateit.androidapplication;
 
 import com.rateit.androidapplication.R;
 import com.rateit.androidapplication.http.HttpClient;
-import com.rateit.androidapplication.http.handlers.IResponseHandler;
+import com.rateit.androidapplication.http.handlers.IJsonResponseHandler;
 import com.rateit.androidapplication.http.handlers.custom.CategoriesHandler;
 import com.rateit.androidapplication.http.handlers.custom.ObjectsHandler;
 import com.rateit.androidapplication.http.handlers.custom.TypesHandler;
+import com.rateit.androidapplication.models.CategoriesModel;
+import com.rateit.androidapplication.models.ObjectsModel;
+import com.rateit.androidapplication.models.TypesModel;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ListView;
 import java.util.Stack;
 
@@ -33,10 +37,11 @@ public class MainActivity extends RateItActivity {
 	{
 		if (saveLastState)
 			actionSeq.push(backMethod);
+		
 		String action = "getcategories";
 		String params = (parentID == null ? "" : Integer.toString(parentID));
-		IResponseHandler handler = new CategoriesHandler(this, listView);
-		httpClient.executeAction(action, params, handler);
+		IJsonResponseHandler<CategoriesModel> handler = new CategoriesHandler(this, listView);
+		httpClient.get(CategoriesModel.class, action, params, handler);
 		
 		backMethod = new GoToCategories(parentID);
 		
@@ -47,8 +52,8 @@ public class MainActivity extends RateItActivity {
 			actionSeq.push(backMethod);
 		String action = "gettypes";
 		String params = Integer.toString(categoryID);
-		IResponseHandler handler = new TypesHandler(this, listView);
-		httpClient.executeAction(action, params, handler);
+		IJsonResponseHandler<TypesModel> handler = new TypesHandler(this, listView);
+		httpClient.get(TypesModel.class, action, params, handler);
 		
 		backMethod = new GoToTypes(categoryID);
 	}
@@ -58,24 +63,12 @@ public class MainActivity extends RateItActivity {
 			actionSeq.push(backMethod);	
 		String action = "getobjects";
 		String params = Integer.toString(typeID);
-		IResponseHandler handler = new ObjectsHandler(this, listView);
-		httpClient.executeAction(action, params, handler);
+		IJsonResponseHandler<ObjectsModel> handler = new ObjectsHandler(this, listView);
+		httpClient.get(ObjectsModel.class, action, params, handler);
 		
 		backMethod = new GoToObjects(typeID);
 		
 	}
-
-	public void ExecuteAction(String action, int id, IResponseHandler handler, IMethod _backMethod)
-	{
-		if (_backMethod != null)
-			actionSeq.push(backMethod);
-		
-		httpClient.executeAction(action, Integer.toString(id), handler);
-		
-		if (_backMethod != null)
-			backMethod = (_backMethod);
-	}
-	
 	
     @Override
     protected void onCreate(Bundle savedInstanceState) {

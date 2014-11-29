@@ -10,12 +10,10 @@ import org.json.JSONObject;
 import com.rateit.androidapplication.components.CustomScrollView;
 import com.rateit.androidapplication.dialogs.SetUserCommentDialog;
 import com.rateit.androidapplication.http.HttpClient;
-import com.rateit.androidapplication.http.handlers.IResponseHandler;
+import com.rateit.androidapplication.http.handlers.IJsonResponseHandler;
 import com.rateit.androidapplication.http.handlers.custom.GetCommentsPageHandler;
-import com.rateit.androidapplication.http.handlers.custom.GetCommentsPagesHandler;
 import com.rateit.androidapplication.http.handlers.custom.IFileDownloadCompleteHandler;
 import com.rateit.androidapplication.http.handlers.custom.ObjectHandler;
-import com.rateit.androidapplication.http.handlers.custom.SetCommentRatingHandler;
 import com.rateit.androidapplication.http.handlers.custom.SetUserCommentHandler;
 import com.rateit.androidapplication.models.Comment;
 import com.rateit.androidapplication.models.ObjectModel;
@@ -24,7 +22,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.LayoutInflater;
 import android.view.View.OnClickListener;
@@ -152,7 +149,7 @@ public class ObjectActivity extends RateItActivity {
 			@Override
 			public void onClick(View arg0) {
 				boolean isNew = hasUserComment();
-				IResponseHandler handler = new SetUserCommentHandler(thisActivity);
+				IJsonResponseHandler<Comment> handler = new SetUserCommentHandler(thisActivity);
 				SetUserCommentDialog dlg = new SetUserCommentDialog(thisActivity, model.ID, handler, isNew);
 				dlg.show();
 			}
@@ -170,8 +167,10 @@ public class ObjectActivity extends RateItActivity {
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
         int objID = bundle.getInt("objectID");
-        httpClient.executeAction("GetObject", Integer.toString(objID), new ObjectHandler(this));
-        lock();
+        
+        IJsonResponseHandler<ObjectModel> handler = new ObjectHandler(this);
+        
+        httpClient.get(ObjectModel.class, "GetObject", Integer.toString(objID), handler);
     }
     
     
@@ -204,8 +203,8 @@ public class ObjectActivity extends RateItActivity {
     	catch (JSONException e)
 		{
 		}
-    	IResponseHandler handler = new GetCommentsPagesHandler(this);
-    	httpClient.PostJSON("GetCommentsPages", Integer.toString(model.ID), object, handler);
+    	//IJsonResponseHandler<Comment> handler = new GetCommentsPagesHandler(this);
+    	//httpClient.PostJSON("GetCommentsPages", Integer.toString(model.ID), object, handler);
     }
     
     public void setComments(Collection<Comment> _comments, boolean refreshView)
@@ -265,7 +264,7 @@ public class ObjectActivity extends RateItActivity {
 		catch (JSONException e)
 		{
 		}
-		httpClient.PostJSON("GetComments", Integer.toString(model.ID), object, new GetCommentsPageHandler(this));
+		httpClient.post(Comment.class, "GetComments", Integer.toString(model.ID), object, new GetCommentsPageHandler(this));
     }
 
 	private void showCommentsTab()
@@ -324,8 +323,8 @@ public class ObjectActivity extends RateItActivity {
 		    upButton.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					IResponseHandler handler = new SetCommentRatingHandler(thisActivity);
-					httpClient.executeAction("SetCommentRating", Integer.toString(comment.ID), handler);
+					//IJsonResponseHandler handler = new SetCommentRatingHandler(thisActivity);
+					//httpClient.executeAction("SetCommentRating", Integer.toString(comment.ID), handler);
 				}
 			});
 	    }
@@ -337,8 +336,8 @@ public class ObjectActivity extends RateItActivity {
 		    downButton.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					IResponseHandler handler = new SetCommentRatingHandler(thisActivity);
-					httpClient.executeAction("SetCommentRating", Integer.toString(comment.ID), handler);
+					//IResponseHandler handler = new SetCommentRatingHandler(thisActivity);
+					//httpClient.executeAction("SetCommentRating", Integer.toString(comment.ID), handler);
 				}
 			});
 	    }

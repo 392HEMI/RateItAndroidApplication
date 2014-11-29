@@ -4,6 +4,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.util.Log;
+
 import com.rateit.androidapplication.RateItAndroidApplication;
 
 public class JsonStatusedResponseHandler<T> extends JsonResponseHandler<T> 
@@ -39,6 +41,7 @@ public class JsonStatusedResponseHandler<T> extends JsonResponseHandler<T>
 		// Если это возможно массив
 		if (!valid)
 		{
+			Log.i("array", "is Array");
 			valid = true;
 			JSONArray array = null;
 			try

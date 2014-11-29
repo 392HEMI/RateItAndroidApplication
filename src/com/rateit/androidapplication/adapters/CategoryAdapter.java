@@ -1,6 +1,7 @@
 package com.rateit.androidapplication.adapters;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +21,7 @@ public class CategoryAdapter extends BaseAdapter {
 	    objects = subCategories;
 	    lInflater = (LayoutInflater) ctx
 	        .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+	    Log.i("awda", Integer.toString(subCategories.length));
 	  }
 
 	  @Override
@@ -46,7 +48,7 @@ public class CategoryAdapter extends BaseAdapter {
 
 	    SubCategory c = (SubCategory)getItem(position);
 	    TextView label = (TextView)view.findViewById(R.id.label);
-	    label.setText(c.title);
+	    label.setText(c.Title);
 	    return view;
 	  }
 }

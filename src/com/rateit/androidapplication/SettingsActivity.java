@@ -1,8 +1,9 @@
 package com.rateit.androidapplication;
 
 import com.rateit.androidapplication.http.HttpClient;
-import com.rateit.androidapplication.http.handlers.IResponseHandler;
+import com.rateit.androidapplication.http.handlers.IJsonResponseHandler;
 import com.rateit.androidapplication.http.handlers.custom.SignOutHandler;
+import com.rateit.androidapplication.models.SignOutResponse;
 
 import android.os.Bundle;
 import android.view.View;
@@ -24,7 +25,7 @@ public class SettingsActivity extends LockableActivity {
 		exitBtn.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				IResponseHandler handler = new SignOutHandler(activity);
+				IJsonResponseHandler<SignOutResponse> handler = new SignOutHandler(activity);
 				httpClient.SignOut(handler);
 			}
 		});

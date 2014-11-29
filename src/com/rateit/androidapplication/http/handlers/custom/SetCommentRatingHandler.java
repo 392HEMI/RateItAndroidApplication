@@ -1,45 +1,49 @@
 package com.rateit.androidapplication.http.handlers.custom;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import com.rateit.androidapplication.ObjectActivity;
-import com.rateit.androidapplication.http.handlers.IResponseHandler;
+import com.rateit.androidapplication.http.handlers.IJsonResponseHandler;
 
-public class SetCommentRatingHandler implements IResponseHandler {
+public class SetCommentRatingHandler implements IJsonResponseHandler<SetCommentRatingHandler.Response> {
 	private ObjectActivity activity;
+	
+	public class Response
+	{
+		public boolean Status;
+		
+		public Response()
+		{
+		}
+	}
 	
 	public SetCommentRatingHandler(ObjectActivity _activity)
 	{
 		activity = _activity;
 	}
 	
+	@Override
+	public void onStart() {
+		activity.lock();
+	}
 	
 	@Override
-	public void Start() {
-		activity.lock();
+	public void onFinish() {
+		activity.unlock();
 	}
 
 	@Override
-	public void Success(int statusCode, String response) {
-		boolean valid = false;
-		try
-		{
-			JSONObject object = new JSONObject(response);
-			if (object.getString("Status").equalsIgnoreCase("ok"))
-				valid = object.getBoolean("Content");
-		}
-		catch (JSONException e)
-		{
-		}
-		if (!valid)
+	public void onSuccess(int statusCode, Response[] response) {
+		
+	}
+	
+	@Override
+	public void onSuccess(int statusCode, Response response) {
+		if (!response.Status)
 			return;
 		activity.refreshComments();
 	}
 
 	@Override
-	public void Failure(int statusCode, Throwable error, String content) {
-		activity.unlock();
+	public void onFailure(int statusCode, Throwable error, String content) {
 	}
 	
 }

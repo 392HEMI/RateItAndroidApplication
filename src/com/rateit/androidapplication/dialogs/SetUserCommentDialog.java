@@ -7,7 +7,8 @@ import com.rateit.androidapplication.R;
 import com.rateit.androidapplication.RateItActivity;
 import com.rateit.androidapplication.RateItAndroidApplication;
 import com.rateit.androidapplication.http.HttpClient;
-import com.rateit.androidapplication.http.handlers.IResponseHandler;
+import com.rateit.androidapplication.http.handlers.IJsonResponseHandler;
+import com.rateit.androidapplication.models.Comment;
 
 import android.app.Dialog;
 import android.view.View;
@@ -23,7 +24,7 @@ public class SetUserCommentDialog extends Dialog {
 	
 	private RateItAndroidApplication application;
 	private int objectID;
-	private IResponseHandler handler;
+	private IJsonResponseHandler<Comment> handler;
 	private boolean isNew;
 	
 	private void InitializeComponent()
@@ -52,7 +53,7 @@ public class SetUserCommentDialog extends Dialog {
 		});
 	}
 	
-	public SetUserCommentDialog(RateItActivity activity, int _objectID, IResponseHandler _handler, boolean _isNew) {
+	public SetUserCommentDialog(RateItActivity activity, int _objectID, IJsonResponseHandler<Comment> _handler, boolean _isNew) {
 		super(activity, R.style.full_screen_dialog);
 	    requestWindowFeature(Window.FEATURE_NO_TITLE);
 	    setCancelable(false);
@@ -78,6 +79,6 @@ public class SetUserCommentDialog extends Dialog {
 		}
 		
 		HttpClient httpClient = application.getHttpClient();
-		httpClient.PostJSON("SetUserComment", Integer.toString(objectID), object, handler);
+		httpClient.post(Comment.class, "SetUserComment", Integer.toString(objectID), object, handler);
 	}
 }

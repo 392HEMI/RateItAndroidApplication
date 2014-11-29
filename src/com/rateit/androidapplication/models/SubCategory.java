@@ -2,14 +2,11 @@ package com.rateit.androidapplication.models;
 
 public class SubCategory
 {
-	public int id;
-	public String title;
-	public boolean isLast;
+	public int ID;
+	public String Title;
+	public boolean IsLast;
 	
-	public SubCategory(int _id, String _title, boolean _isLast)
+	public SubCategory()
 	{
-		id = _id;
-		title = _title;
-		isLast = _isLast;
 	}
 }

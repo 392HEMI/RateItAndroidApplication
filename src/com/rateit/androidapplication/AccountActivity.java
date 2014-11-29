@@ -1,7 +1,7 @@
 package com.rateit.androidapplication;
 
 import com.rateit.androidapplication.http.HttpClient;
-import com.rateit.androidapplication.http.handlers.IResponseHandler;
+import com.rateit.androidapplication.http.handlers.IJsonResponseHandler;
 import com.rateit.androidapplication.http.handlers.custom.LoginHandler;
 
 import android.os.Bundle;
@@ -36,8 +36,7 @@ public class AccountActivity extends LockableActivity {
 			public void onClick(View v) {
 				String username = loginBox.getText().toString();
 				String password = passwordBox.getText().toString();
-				IResponseHandler handler = new LoginHandler(activity);
-				httpClient.Autorize(username, password, handler);
+				httpClient.Autorize(activity, username, password);
 			}
 		});
 		

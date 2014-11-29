@@ -1,25 +1,19 @@
 package com.rateit.androidapplication.http.handlers.custom;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import com.rateit.androidapplication.MainActivity;
-import com.rateit.androidapplication.http.handlers.IResponseHandler;
+import com.rateit.androidapplication.http.handlers.IJsonResponseHandler;
 import com.rateit.androidapplication.models.TypesModel;
-import com.rateit.androidapplication.models.Category;
 import com.rateit.androidapplication.models.Type;
 
 import com.rateit.androidapplication.adapters.TypeAdapter;
 
 import android.app.Activity;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.AdapterView.OnItemClickListener;
 
-public class TypesHandler implements IResponseHandler {
+public class TypesHandler implements IJsonResponseHandler<TypesModel> {
 	private Activity _activity;
 	private ListView _listView;
 	
@@ -30,64 +24,29 @@ public class TypesHandler implements IResponseHandler {
 	}
 	
 	@Override
-	public void Start() {
+	public void onStart() {
 		// TODO Auto-generated method stub
+		
+	}
+	
+	@Override
+	public void onFinish() {
+		
+	}
+	
+	@Override
+	public void onSuccess(int statusCode, TypesModel[] model)
+	{
 		
 	}
 
 	@Override
-	public void Success(int statusCode, String response) {
-		try
-		{
-			JSONObject jsonObj = new JSONObject(response);
-			if (jsonObj.getString("Status").equalsIgnoreCase("ok"))
-				jsonObj = jsonObj.getJSONObject("Content");
-			else
-			{
-				// error
-			}
-			Log.i("PREIVNOKE", "");
-			TypesModel model = new TypesModel();
-			
-			if (jsonObj.isNull("category"))
-			{
-				model.category = null;
-			}
-			else
-			{
-				JSONObject category = jsonObj.getJSONObject("category");
-				int id = category.getInt("ID");
-				String title = category.getString("Title");
-				model.category = new Category(id, title);
-			}
-			
-			JSONArray types = jsonObj.getJSONArray("types");
-			JSONObject type;
-			
-			int count = types.length();
-			model.types = new Type[count];
-			
-			for (int i = 0; i < types.length(); i++)
-			{
-				type = types.getJSONObject(i);
-				
-				int id = type.getInt("id");
-				String title = type.getString("title");
-				boolean hasObjects = type.getBoolean("hasObjects");
-				
-				model.types[i] = new Type(id, title, hasObjects);
-			}
-			attachAdapter(_listView, model.types);
-		}
-		catch (JSONException e)
-		{
-			Log.e("EXEPTION " + getClass(), e.getMessage());
-		}
+	public void onSuccess(int statusCode, TypesModel model) {
+		attachAdapter(_listView, model.types);
 	}
 
 	@Override
-	public void Failure(int statusCode, Throwable error, String content) {
-		// TODO Auto-generated method stub
+	public void onFailure(int statusCode, Throwable error, String content) {
 		
 	}
 	

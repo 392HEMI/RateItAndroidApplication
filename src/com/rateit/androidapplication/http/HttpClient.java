@@ -2,13 +2,16 @@ package com.rateit.androidapplication.http;
 
 
 import java.io.UnsupportedEncodingException;
+import java.util.Collection;
 
 import org.apache.http.entity.ByteArrayEntity;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.content.Context;
+import android.util.Log;
 
+import com.rateit.androidapplication.AccountActivity;
 import com.rateit.androidapplication.RateItAndroidApplication;
 import com.rateit.androidapplication.http.handlers.HttpFileResponseHandler;
 import com.rateit.androidapplication.http.handlers.HttpResponseHandler;
@@ -16,9 +19,13 @@ import com.rateit.androidapplication.http.handlers.IFileResponseHandler;
 import com.rateit.androidapplication.http.handlers.IHttpResponseHandler;
 import com.rateit.androidapplication.http.handlers.IJsonResponseHandler;
 import com.rateit.androidapplication.http.handlers.JsonResponseHandler;
+import com.rateit.androidapplication.http.handlers.JsonStatusedResponseHandler;
 import com.rateit.androidapplication.http.handlers.custom.IFileDownloadCompleteHandler;
 import com.rateit.androidapplication.http.handlers.custom.ImageResponseHandler;
 import com.rateit.androidapplication.http.handlers.custom.LoginHandler;
+import com.rateit.androidapplication.http.handlers.custom.SignOutHandler;
+import com.rateit.androidapplication.models.SignOutResponse;
+import com.rateit.androidapplication.models.ValidationUserResult;
 import com.loopj.android.http.*;
 
 public final class HttpClient {
@@ -43,23 +50,23 @@ public final class HttpClient {
 	
 	private String getAPIActionUrl(String action, String params)
 	{
-		if (params.charAt(0) != '/')
-			params = '/' + params;
-		else
-		{
-			boolean b = false;
-			int i;
-			for (i = 1; i < params.length(); i++)
-				if (params.charAt(i) == '/')
-					b = true;
-				else
-				{
-					b = false;
-					break;
-				}
-			params = params.substring(i - 1);	
-		}
-		return action + params;
+		//if (params.charAt(0) != '/')
+		//	params = '/' + params;
+		//else
+		//{
+		//	boolean b = false;
+		//	int i;
+		//	for (i = 1; i < params.length(); i++)
+		//		if (params.charAt(i) == '/')
+		//			b = true;
+		//		else
+		//		{
+		//			b = false;
+		//			break;
+		//		}
+		//	params = params.substring(i - 1);	
+		//}
+		return API_ADDRESS + action + params;
 	}
 	
 	private void get(String url, ResponseHandlerInterface responseHandler)
@@ -110,23 +117,30 @@ public final class HttpClient {
 		get(url, requestParams, handler);
 	}
 	
+	public <T> void get(Class<T> cls, String action, String urlParams, IJsonResponseHandler<T> responseHandler)
+	{
+		String url = getAPIActionUrl(action, urlParams);
+		JsonResponseHandler<T> handler = new JsonStatusedResponseHandler<T>(application, cls, responseHandler);
+		get(url, handler);
+	}
+	
 	public <T> void get(Class<T> cls, String action, String urlParams, RequestParams requestParams, IJsonResponseHandler<T> responseHandler)
 	{
 		String url = getAPIActionUrl(action, urlParams);
-		JsonResponseHandler<T> handler = new JsonResponseHandler<T>(application, cls, responseHandler);
+		JsonResponseHandler<T> handler = new JsonStatusedResponseHandler<T>(application, cls, responseHandler);
 		get(url, requestParams, handler);
 	}
 	
 	public <T> void post(Class<T> cls, String action, String params, JSONObject object, IJsonResponseHandler<T> responseHandler)
 	{
 		String url = getAPIActionUrl(action, params);
-		JsonResponseHandler<T> handler = new JsonResponseHandler<T>(application, cls, responseHandler); 
+		JsonResponseHandler<T> handler = new JsonStatusedResponseHandler<T>(application, cls, responseHandler); 
 		post(url, object, handler);
 	}
 	
 	
 	// Авторизация
-	public void Autorize(String username, String password, IHttpResponseHandler handler)
+	public void Autorize(AccountActivity activity, String username, String password)
 	{
 		String url = AUTH_ADDRESS + "login";
 		JSONObject obj = new JSONObject();
@@ -138,14 +152,19 @@ public final class HttpClient {
 		catch (JSONException e)
 		{
 		}
-		Class<?> cls = LoginHandler.UserInfo.class;
-		post(url, obj, new JsonResponseHandler(application, cls, handler));
+		
+		Class<ValidationUserResult> cls = ValidationUserResult.class;
+		IJsonResponseHandler<ValidationUserResult> handler = new LoginHandler(activity);
+		JsonStatusedResponseHandler<ValidationUserResult> responseHandler =
+				new JsonStatusedResponseHandler<ValidationUserResult>(application, cls, handler);
+		post(url, obj, responseHandler);
 	}
 	
-	public void SignOut(IHttpResponseHandler responseHandler)
+	public void SignOut(IJsonResponseHandler<SignOutResponse> responseHandler)
 	{
 		String url = AUTH_ADDRESS + "SignOut";
-		HttpResponseHandler handler = new HttpResponseHandler(application, responseHandler);
+		JsonStatusedResponseHandler<SignOutResponse> handler =
+				new JsonStatusedResponseHandler<SignOutResponse>(application, SignOutResponse.class, responseHandler);
 		get(url, handler);
 	}
 	
